@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 18, 2025 at 08:01 AM
+-- Generation Time: May 22, 2025 at 04:04 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -34,18 +34,37 @@ CREATE TABLE `admin_users` (
   `email` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
   `otp` varchar(100) NOT NULL,
-  `otp_send_time` varchar(100) NOT NULL,
+  `otp_send_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE current_timestamp(),
   `verify_otp` varchar(100) NOT NULL,
+  `otp_expires` datetime NOT NULL,
   `ip_add` varchar(100) NOT NULL,
-  `status` varchar(100) NOT NULL
+  `status` varchar(100) NOT NULL,
+  `reset_tokens` varchar(100) NOT NULL,
+  `reset_expires` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `admin_users`
+--
 --
 
-INSERT INTO `admin_users` (`ID`, `firstname`, `lastname`, `email`, `password`, `otp`, `otp_send_time`, `verify_otp`, `ip_add`, `status`) VALUES
-(12, 'Justine ', 'Avio', 'justinejeckhoavio@gmail.com', 'jex12345', '976320', '2025-05-18 02:38:03', '', '::1', 'active');
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `password_resets`
+--
+
+CREATE TABLE `password_resets` (
+  `id` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `token` varchar(100) NOT NULL,
+  `requested_at` datetime DEFAULT current_timestamp(),
+  `ip_add` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- 
+--
+
 
 --
 -- Indexes for dumped tables
@@ -58,6 +77,12 @@ ALTER TABLE `admin_users`
   ADD PRIMARY KEY (`ID`);
 
 --
+-- Indexes for table `password_resets`
+--
+ALTER TABLE `password_resets`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -65,7 +90,13 @@ ALTER TABLE `admin_users`
 -- AUTO_INCREMENT for table `admin_users`
 --
 ALTER TABLE `admin_users`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+--
+-- AUTO_INCREMENT for table `password_resets`
+--
+ALTER TABLE `password_resets`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
