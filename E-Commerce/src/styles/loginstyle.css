@@ -1,0 +1,418 @@
+@font-face {
+  font-family: "Inter";
+  src: url(../fonts/static/Inter_18pt-Regular.ttf) format("truetype");
+}
+
+*{
+     font-family: "Inter", sans-serif;     ;
+}
+
+body {
+    background-color: #e1e1e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    background-color: #ECF0F1;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 80%;
+    max-width: 1200px;
+}
+
+.image-side {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-side img {
+    /*width: 95%;*/
+    padding-left: 20px;
+    max-width: 900px;  
+    height: 525px;
+}
+
+.form-side {
+    flex: 1;
+    padding: 40px;
+    margin-top: 4%;
+}
+
+.form-side h1 {
+    margin-bottom:  10px;
+}
+
+.form-side p {
+    margin-bottom: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 16px;           
+    margin: 14px 0;         
+    font-size: 1.15rem;    
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    box-sizing: border-box;  
+}
+#checkbox.error {
+    outline: 2px solid red;
+    box-shadow: 0 0 2px 2px red;
+}
+.checkbox-container input[type="checkbox"] {
+    margin: 0 8px 0 0;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: rgb(0, 123, 255);
+    border: #ECF0F1;
+    outline: #ECF0F1;
+  }
+  .checkbox-container label {
+    margin: 0;
+    user-select: none;
+    cursor: pointer;
+    font-weight: 500;
+    color: #000;
+    display: flex;
+    align-items: left;
+    justify-content: center;
+    white-space: nowrap;
+  }  
+.checkbox-container a{
+    margin-top: 20px;
+    color: #007BFF;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 0;
+    margin-top: 0;
+    white-space: nowrap;
+}
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    bottom: 25rem;
+}
+
+.checkbox-container input[type="checkbox"]:checked {
+    background-color: #fff;
+}
+
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper input[type="password"] {
+  width: 100%;
+  padding-right: 70px; /* space for the checkbox/label */
+}
+
+.show-password-label {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+  cursor: pointer;
+  user-select: none;
+  gap: 3px;
+  background: #fff;
+  padding: 0 4px;
+  z-index: 2;
+}
+.show-password-label input[type="checkbox"] {
+  margin: 0 3px 0 0;
+  width: 16px;
+  height: 16px;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    background-color: #003366;
+    border: none;
+    color: white;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 1.15rem;
+    font-weight: 500;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+p {
+    margin: 10px 0;
+}
+
+a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+input.error, select.error, textarea.error {
+    border: 2px solid red !important;
+}
+
+#error-message {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+/*TO HIDE THE DEFAULT EYE-ICON IN CHROME/EDGE */
+/* Remove Chrome/Edge default password reveal icon */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-input-decoration,
+input[type="password"]::-webkit-input-clear-button,
+input[type="password"]::-webkit-input-password-reveal-button {
+  display: none !important;
+}
+
+input[type="password"]::-webkit-input-password-reveal-button {
+  display: none !important;
+}
+
+input[type="password"]::-webkit-input-clear-button {
+  display: none !important;
+}
+
+@media (max-width: 800px) {
+  .container {
+    flex-direction: column;
+    width: 98%;
+    max-width: 98vw;
+    min-width: unset;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+
+  .image-side {
+    order: 1;
+    flex: none;
+    padding: 20px 0 0 0;
+  }
+
+  .image-side img {
+    width: 80%;
+    max-width: 350px;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .form-side {
+    order: 2;
+    flex: none;
+    padding: 25px 10px 30px 10px;
+    margin-top: 0;
+  }
+
+  .form-side h1 {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  .form-side p {
+    text-align: center;
+  }
+
+  .checkbox-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
+    width: 100%;
+  }
+
+  .checkbox-container label {
+    font-size: 1rem;
+    flex: 1;
+    justify-content: flex-start;
+    margin-bottom: 0;
+  }
+
+  .checkbox-container a {
+    font-size: 1rem;
+    margin-left: 10px;
+    margin-top: 0;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  button {
+    padding: 12px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    width: 95%;
+    max-width: 95vw;
+    min-width: unset;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+
+  .image-side {
+    order: 1;
+    flex: none;
+    padding: 20px 0 0 0;
+  }
+
+ .image-side img {
+    width: 85%;
+    max-width: 500px;  
+    height: auto;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .form-side {
+    order: 2;
+    flex: none;
+    padding: 25px 15px 30px 15px;
+    margin-top: 0;
+  }
+
+  .form-side h1 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .form-side p {
+    text-align: center;
+  }
+
+  .checkbox-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  button {
+    padding: 12px;
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    width: 100%;
+    max-width: 95vw;
+    min-width: unset;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    height: auto;
+  }
+
+  .image-side {
+    order: 1;
+    flex: none;
+    padding: 20px 0 0 0;
+  }
+
+  .image-side img {
+    width: 80%;
+    max-width: 350px;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .form-side {
+    order: 2;
+    flex: none;
+    padding: 20px 10px 25px 10px;
+    margin-top: 0;
+  }
+
+  .form-side h1 {
+    font-size: 1.3rem;
+    text-align: center;
+  }
+
+  .form-side p {
+    text-align: center;
+  }
+
+  .checkbox-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
+    width: 100%;
+  }
+
+  .checkbox-container label {
+    font-size: 1rem;
+    flex: 1;
+    justify-content: flex-start;
+    margin-bottom: 0;
+  }
+
+  .checkbox-container a {
+    font-size: 1rem;
+    margin-left: 10px;
+    margin-top: 0;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  button {
+    padding: 12px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .form-side {
+    padding: 15px 5px 20px 5px;
+  }
+  .checkbox-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
+    width: 100%;
+  }
+  .checkbox-container label {
+    font-size: 0.95rem;
+    flex: 1;
+    justify-content: flex-start;
+  }
+  .checkbox-container a {
+    font-size: 0.95rem;
+    margin-left: 10px;
+    margin-top: 0;
+    flex-shrink: 0;
+  }
+}
