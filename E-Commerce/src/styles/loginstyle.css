@@ -127,7 +127,7 @@ input {
   transform: translateY(-50%);
   display: flex;
   align-items: center;
-  font-size: 0.95rem;
+  font-size: 1.5rem;
   cursor: pointer;
   user-select: none;
   gap: 3px;

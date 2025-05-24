@@ -9,7 +9,7 @@
 
 body {
     font-family: "Inter", sans-serif;
-    margin: 0;
+    margin: 0;  
     padding: 0;
     display: flex;
     justify-content: center;
@@ -23,10 +23,10 @@ body {
     background: #ECF0F1;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    width: 80%;
+    width: 100%;
     overflow: hidden;
-    max-width: 1600px;
-    /*padding-top: 29px;*/
+    max-width: 1700px;
+    padding: 0 10px;
 }
 
 .form-section {
@@ -35,7 +35,7 @@ body {
     flex: 1;
 }
 
-h1 {
+h2 {
     font-size: 45px;
     margin-bottom: 10px;
 }
@@ -81,6 +81,11 @@ input[type="text"], input[type="email"], input[type="password"] {
     width: 100%;
 }
 
+.checkbox-container label p {
+    margin: 0;
+    font-size: 15px;
+}
+
 .password-wrapper {
   position: relative;
   width: 100%;
@@ -94,11 +99,11 @@ input[type="text"], input[type="email"], input[type="password"] {
 .show-password-label {
   position: absolute;
   right: 10px;
-  top: 50%;
+  top: 40%;
   transform: translateY(-50%);
   display: flex;
   align-items: center;
-  font-size: 0.95rem;
+  font-size: 1.5rem;
   cursor: pointer;
   user-select: none;
   gap: 3px;
@@ -112,8 +117,8 @@ input[type="text"], input[type="email"], input[type="password"] {
     height: 20px;
     cursor: pointer;
     accent-color: rgb(0, 123, 255);
-    border: #ECF0F1;
-    outline: #ECF0F1;
+    border: 1px solid #ccc;
+    outline: none;
     /*top: -13px*/
     /*position: relative;*/
   }
@@ -142,6 +147,8 @@ button {
 
 #Notice{
     margin-top: 8px;
+    font-size: 18px;
+    color: #555;
 }
 button:hover {
     background-color: #0056b3;
@@ -162,13 +169,14 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 0;
 }
 
 .image-section img {
-    /*width: 95%;*/
-    max-width: 950px;  
-    height: 600px;
+    width: 100%;
+    max-width: 100%;  
+    height: auto;
+    object-fit: cover;
 }
 
 input.error, select.error, textarea.error {
@@ -179,6 +187,73 @@ input.error, select.error, textarea.error {
     color: red;
     font-size: 0.9rem;
     margin-top: 5px;
+}
+
+.modal{
+  display: none;
+  background-color: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: all 0.3s ease-in-out;
+  z-index: 1;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.modal-inner{
+  position: relative;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 15px 25px;
+  width: 750px;
+  height: 500px;
+  overflow:auto;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  text-align: left;
+}
+
+.modal-inner h2{
+  margin-bottom: 0;
+  font-size: 1.5rem;
+  font-style: bold;
+  text-align: center;
+}
+
+.modal-inner p{
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.modal-inner ol{
+  padding-left: 20px;
+}
+
+.modal-inner {
+    position: relative; 
+}
+
+.close-modal {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    cursor: pointer;
+    font-size: 1.3rem;
+    color: #888;
+    z-index: 10;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.modal.open{
+  display: flex;
+  opacity: 1;
+  z-index: 999;
 }
 
 /*TO HIDE THE DEFAULT EYE-ICON IN CHROME/EDGE */
@@ -203,6 +278,14 @@ input[type="password"]::-webkit-input-clear-button {
   display: none !important;
 }
 
+input[type="password"]::-webkit-credentials-auto-fill-button {
+  display: none !important;
+}
+
+input[type="password"]::-webkit-input-decoration {
+  display: none !important;
+}
+
 @media (min-width: 1025px) and (max-width: 1600px) {
   .image-section img {
     max-width: 800px;
@@ -223,13 +306,13 @@ input[type="password"]::-webkit-input-clear-button {
   }
 
   .form-section, .image-section {
-    padding: 18px 10px;
+    padding: 0;
     flex: none;
     width: 100%;
   }
 
   .image-section img {
-    max-width: 700px;
+    max-width: 900px;
     width: 100%;
     height: auto;
   }
@@ -254,7 +337,7 @@ input[type="password"]::-webkit-input-clear-button {
   }
 
   .form-section, .image-section {
-    padding: 18px 10px;
+    padding: 0;
     flex: none;
     width: 100%;
   }
@@ -268,7 +351,7 @@ input[type="password"]::-webkit-input-clear-button {
   }
 
   .image-section img {
-    max-width: 300px;
+    max-width: 500px;
     width: 80%;
     height: auto;
   }
@@ -349,7 +432,7 @@ input[type="password"]::-webkit-input-clear-button {
   }
 
   .image-section img {
-    max-width: 90vw;
+    max-width: 95vw;
     width: 100%;
     height: auto;
   }
