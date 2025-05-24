@@ -45,52 +45,98 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['checkbox'])) {
                     <div class="otp-fields">
                         <input type="text" name="otp" id="otp" class="form-control" value = "" hidden>
                     </div>
-                    <div class = checkbox-container> 
+                    <div class = "checkbox-container"> 
                         <label>
                             <input type="checkbox" id="checkbox" name="checkbox">
-                            I agree to the&nbsp;<b><a href="#" id="OpenTerms">Terms and Conditions</a></b>&nbsp; and &nbsp; <b><a href="#" id="Privacy">Privacy Policies</a></b>
+                            <p>I agree to the&nbsp;<b><a href="#" id="OpenTerms">Terms and Conditions</a></b> and <b><a href="#" id="Privacy">Privacy Policies</a></b></p>
                         </label>
                     </div>
                     <div class="modal" id="modalTerms">
                         <div class="modal-inner">
                             <h2> Terms and Conditions</h2>
-                            <h6>Effective Date: 04/10/2025</h6>
-                            <h6>Company Name: SoundStage Inc.</h6>
+                            <p>Effective Date: 04/10/2025<br>
+                            Company Name: SoundStage Inc.</p>
                             <ol type="1" class= "list-wrapper">
-                                <li>Introduction</li>
-                                <li>Eligibility</li>
-                                <li>Purchases</li>
-                                <li>Pricing and Payment</li>
-                                <li>Shipping and Delivery</li>
-                                <li>Returns and Refunds</li>
-                                <li>Intellectual Property</li>
-                                <li>Probihited Activities</li>
-                                <li>Limitation of Liability</li>
-                                <li>Changes of these Terms</li>
-                                <li>Governing Law</li>
-                                <li>Contact Information</li>
+                                <li><b>Introduction</b></li>
+                                    <ul><li>Welcome to SoundStage.Inc. These Terms and Conditions govern your use of our website and services. By accessing or using our site, you agree to be bound by these Terms.</li></ul>
+                                <li><b>Eligibility</b></li> 
+                                    <ul><li>You must be at least 18 years old to use our website. By using our site, you confirm you meet this requirement.</li></ul>                                                               
+                                <li><b>Purchases</b></li>
+                                    <ul><li>All purchases made through our website are subject to product availability. We reserve the right to cancel or refuse any order.</li></ul>
+                                <li><b>Pricing and Payment</b></li>
+                                    <ul><li>Prices are listed in Philippine Peso. We reserve the right to change prices at any time. Payment must be completed at checkout through the available payment methods.</li></ul>
+                                <li><b>Shipping and Delivery</b></li>
+                                    <ul><li>Delivery times are estimates and may vary. Shipping policies, costs, and delivery options are outlined during checkout.</li></ul>
+                                <li><b>Returns and Refunds</b></li>
+                                    <ul><li>Please review our Return Policy for information about returns and refunds.</li></ul>
+                                <li><b>Intellectual Property</b></li>
+                                    <ul><li>All content on our website, including logos, images, and text, is owned by SoundStage Inc. and protected by intellectual property laws.</li></ul>
+                                <li><b>Probihited Activities</b></li>
+                                    <ul><li>You agree not to misuse our website, including unauthorized access, distributing viruses, spamming, or infringing on our intellectual property.</li></ul>
+                                <li><b>Limitation of Liability</b></li>
+                                    <ul><li>SoundStage.Inc is not responsible for any indirect, incidental, or consequential damages arising from your use of the site or products.</li></ul>
+                                <li><b>Changes of these Terms</b></li>
+                                    <ul><li>We reserve the right to update these Terms at any time. Changes will be posted on this page.</li></ul>
+                                <li><b>Governing Law</b></li>
+                                    <ul><li>These Terms are governed by the laws of Philippines.</li></ul>
+                                <li><b>Contact Information</b></li>
+                                    <ul><li>For any questions regarding these Terms, please contact us at helpcenter@soundstage.com</li></ul>
                             </ol>
-                            <button type="button" class="close-modal" id="closeTerms">Close</button>
+                            <span class="close-modal" id="closeTerms"tabindex="0" role="button"><i class="bi bi-x-lg"></i></span>
                         </div>
                     </div>
                     <div class="modal" id="modalPrivacy">
                         <div class="modal-inner">
                             <h2> Privacy Policy</h2>
-                            <h6>Effective Date: 04/10/2025</h6>
-                            <h6>Company Name: SoundStage Inc.</h6>
+                            <p>Effective Date: 04/10/2025<br>
+                            Company Name: SoundStage Inc.</p>
                             <ol type="1" class= "list-wrapper">
-                                <li>Introduction</li>
-                                <li>Information We Collect</li>
-                                <li>How we Use Your Information</li>
-                                <li>Sharing your information</li>
-                                <li>Cookies</li>
-                                <li>Security</li>
-                                <li>Your Rights</li>
-                                <li>Third-Party Links</li>
-                                <li>Changes to THis Privacy Policy</li>
-                                <li>Contact Us</li>
+                                <li><b>Introduction</b></li>
+                                    <ul>
+                                        <li>We value your privacy. This Privacy Policy explains how we collect, use, and protect your personal information when you visit or make a purchase from our site.</li>
+                                    </ul>
+                                <li><b>Information We Collect</b></li>
+                                <ul>
+                                    <li>Personal Information: Name, Address, Email, Phone Number, Payment Details.</li>
+                                    <li> Automatically Collected Information: IP address, browser type, device information, cookies.</li>
+                                </ul>
+                                <li><b>How we Use Your Information</b></li>
+                                <ul>
+                                    <li>We use your information to:</li>
+                                    <ul>
+                                        <li>Process orders and payments.</li>
+                                        <li>Deliver products and services.</li>
+                                        <li>Communicate with you (order updates, newsletters, promotions).</li>
+                                        <li>Improve our website and services.</li>
+                                    </ul>
+                                </ul>
+                                <li><b>Sharing your information</b></li>
+                                <ul>
+                                    <li>We do not sell or rent your personal information. We may share it with:</li>
+                                    <li>Trusted third-party service providers (e.g., payment processors, delivery companies).</li>
+                                    <li>Law enforcement if legally required.</li>
+                                </ul>
+                                <li><b>Cookies</b></li>
+                                <ul><li>Our site uses cookies to improve your browsing experience. You can control cookie settings in your browser.</li></ul>
+                                <li><b>Security</b></li>
+                                <ul><li>We take reasonable measures to protect your personal data, but no system is 100% secure.</li></ul>
+                                <li><b>Your Rights</b></li>
+                                <ul>
+                                    <li style="margin-bottom: 0; font-size:16px;">You have the right to:</li>
+                                    <ul>
+                                        <li>Access the personal information we hold about you.</li>
+                                        <li>Request correction or deletion of your data.</li>
+                                        <li>Opt out of marketing communications.</li>
+                                    </ul>
+                                </ul>
+                                <li><b>Third-Party Links</b></li>
+                                <ul><li>Our website may contain links to third-party websites. We are not responsible for their privacy practices.</li></ul>
+                                <li><b>Changes to This Privacy Policy</b></li>
+                                <ul><li>We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated effective date.</li></ul>
+                                <li><b>Contact Us</b></li>
+                                <ul><li>For any questions about this Privacy Policy, contact us at helpcenter@soundstage.com</li></ul>
                             </ol>
-                            <button type="button" class="close-modal" id="closePrivacy">Close</button>
+                            <span class="close-modal" id="closePrivacy" tabindex="0" role="button"><i class="bi bi-x-lg"></i></span>
                         </div>
                     </div>
                     <button type="submit" name ="send"><b>Register</b></button>
