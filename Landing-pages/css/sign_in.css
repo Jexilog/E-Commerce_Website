@@ -1,0 +1,161 @@
+*
+{
+    box-sizing: border-box;
+    padding: 0%;
+    margin: 0%;
+    color: var(--text_color);
+    font-family: Arial, sans-serif;
+}
+::-webkit-scrollbar
+{
+    display: none;
+}
+body
+{
+    overscroll-behavior: none;
+}
+main
+{
+    height: 100vh;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 100vh;
+    grid-template-areas:  
+    "img form";
+
+    overflow: hidden;
+}
+.img
+{
+    grid-area: img;
+
+    img 
+    {
+        max-width: 100%;
+    }
+}
+.container
+{
+    grid-area: form;
+
+    display: grid;
+    grid-template-columns: 70px 1fr 70px;
+    grid-template-rows: repeat(9, 1fr);
+    grid-template-areas: 
+    ". . ."
+    ". title ."
+    ". text ."
+    ". form ."
+    ". form ."
+    ". check_box ."
+    ". login_btn ."
+    ". sign_up_link ."
+    ". . .";
+}
+.title
+{
+    grid-area: title;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.text
+{
+    grid-area: text;
+    text-align: center;
+}
+form
+{
+    grid-area: form;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-areas:  
+    "email"
+    "pass";
+}
+form .email
+{
+    grid-area: email;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    input 
+    {
+        height: 50px;
+        width: 100%;
+        padding: 10px;
+        font-size: 15px;
+    }
+}
+form .pass
+{
+    grid-area: pass;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    input 
+    {
+        height: 50px;
+        width: 100%;
+        padding: 10px;
+        font-size: 15px;
+    }
+}
+.check_box
+{
+    grid-area: check_box;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bolder;
+    color: gray;
+
+    a
+    {
+        text-decoration: none;
+    }
+}
+.login_btn
+{
+    grid-area: login_btn;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    button
+    {
+        height: 50px;
+        width: 100%;
+        border-radius: 20px;
+        border: none;
+        background-color: #003366;
+        color: white;
+    }
+}
+.sign_up_link
+{
+    grid-area: sign_up_link;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bolder;
+    color: gray;
+
+    a
+    {
+        text-decoration: none;
+        font-weight: bolder;
+        color: #3498DB;
+    }
+}
