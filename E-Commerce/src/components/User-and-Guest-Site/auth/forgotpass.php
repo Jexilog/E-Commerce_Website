@@ -3,10 +3,10 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require '../../Composer/vendor/phpmailer/phpmailer/src/Exception.php';
-require '../../Composer/vendor/phpmailer/phpmailer/src/PHPMailer.php';
-require '../../Composer/vendor/phpmailer/phpmailer/src/SMTP.php';
-require '../../Composer/vendor/autoload.php';
+require '/xampp/htdocs/E-Commerce-Website-System/E-Commerce/src/components/Composer/vendor/phpmailer/phpmailer/src/Exception.php';
+require '/xampp/htdocs/E-Commerce-Website-System/E-Commerce/src/components/Composer/vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require '/xampp/htdocs/E-Commerce-Website-System/E-Commerce/src/components/Composer/vendor/phpmailer/phpmailer/src/SMTP.php';
+require '/xampp/htdocs/E-Commerce-Website-System/E-Commerce/src/components/Composer/vendor/autoload.php';
 
 $conn = mysqli_connect("localhost", "root", "", "db_signup");
 $message = "";
@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $domain = $_SERVER['HTTP_HOST'];
 
 
-        $reset_link = $protocol . $domain . "ITEC60/E-Commerce/src/components/resetpass.php?token=$token";
+        $reset_link = $protocol . $domain . "/E-Commerce-Website-System/E-Commerce/src/components/User-and-Guest-Site/auth/resetpass.php?token=$token";
         $mail = new PHPMailer(true);
     try {
         $mail->isSMTP();

@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($user && password_verify($password,$user['password'])) { 
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['email'] = $user['email'];
-        header("Location: dashboard.php"); 
+        header("Location: ../components/User-and-Guest-Site/index.php"); 
         exit();
     } else {
         $error = "Invalid email or password.";
@@ -35,13 +35,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" 
     crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="../styles/loginstyle.css">
+    <link rel="stylesheet" href="../../../styles//User-and-Guest-Site//auth//loginstyle.css ">
     <title>Login</title>
 </head>
 <body>
     <div class="container">
         <div class="image-side">    
-            <img src="../images/login.png" alt="User Login">
+            <img src="../../../images//login.png" alt="User Login">
         </div>
         <div class="form-side">
             <form id="forms" action="login.php" method="POST">
@@ -65,10 +65,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="checkbox" id="rememberMe">
                         <label for="rememberMe">Remember me</label>
                     </div>
-                    <p><a href="../components/forgotpass.php"><b>Forgot password?</b></a></p>
+                    <p><a href="../auth//forgotpass.php"><b>Forgot password?</b></a></p>
                 </div>
                 <button type="submit">Login</button>
-                <p>Don't have an account? <b><a href="../components/signup.php">Sign Up</a></b></p>
+                <p>Don't have an account? <b><a href="../auth//signup.php">Sign Up</a></b></p>
                 </center>
             </form>
         </div>

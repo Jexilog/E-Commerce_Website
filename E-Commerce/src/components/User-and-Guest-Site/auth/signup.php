@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['checkbox'])) {
     crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <script src="https://smtpjs.com/v3/smtp.js"></script>
-    <link rel="stylesheet" href="../styles/signupstyle.css">
+    <link rel="stylesheet" href="/E-Commerce-Website-System/E-Commerce/src/styles/User-and-Guest-Site/auth/signupstyle.css">
 </head>
 <body>
     <center>
@@ -140,12 +140,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['checkbox'])) {
                         </div>
                     </div>
                     <button type="submit" name ="send"><b>Register</b></button>
-                    <p id ="Notice" >Already have an account? <b><a href="../components/login.php">Login</a></b></p>
+                    <p id ="Notice" >Already have an account? <b><a href="../auth/login.php">Login</a></b></p>
                     <p id="error-message" class="error-message"></p>
                     </div>
             </form>
                 <div class="image-section">
-                    <img src="../images/signup.png" alt="Registration Visual">
+                    <img src="/E-Commerce-Website-System/E-Commerce/src/images/signup.png" alt="Registration Visual">
                 </div>
         </div>
     </div>
@@ -153,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['checkbox'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" 
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" 
     crossorigin="anonymous"></script>
-    <script src="../script/test.js"></script>
+    <script src="/E-Commerce-Website-System/E-Commerce/src/script/User-and-Guest-Site/auth/test.js"></script>
     <script>
         const openterms = document.getElementById('OpenTerms');
         const modalTerms = document.getElementById('modalTerms');

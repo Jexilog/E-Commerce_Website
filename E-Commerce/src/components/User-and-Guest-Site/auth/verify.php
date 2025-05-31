@@ -27,7 +27,7 @@
                 echo "<script>
                 alert('OTP verified successfully!');
                 </script>";
-                header("Location: ../components/login.php");
+                header("Location: /E-Commerce-Website-System/E-Commerce/src/components/User-and-Guest-Site/auth/login.php");
             } else {
                 echo "<script>
                 alert('Invalid OTP. Please try again.');
@@ -140,11 +140,11 @@
             </div>
             <button type="submit" name="verify" class="btn btn-primary">Verify OTP</button>
         </form>
-           <!--?php if($message && !$email): ?>
+           <!-- <--?php if($message && !$email): ?>
                 <div class="alert alert-danger" role="alert">
                     <p><--?php echo $message; ?></p>
-                </div-->
-            <!--?php endif; ?-->
+                </div
+            <--?php endif; ?> -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" 
         integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" 
         crossorigin="anonymous"></script>

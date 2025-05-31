@@ -2,11 +2,12 @@
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
 
-require '../../Composer/vendor/phpmailer/phpmailer/src/Exception.php';
-require '../../Composer/vendor/phpmailer/phpmailer/src/PHPMailer.php';
-require '../../Composer/vendor/phpmailer/phpmailer/src/SMTP.php';
-require '../../Composer/vendor/autoload.php';
+require '/xampp/htdocs/E-Commerce-Website-System/E-Commerce/src/components/Composer/vendor/phpmailer/phpmailer/src/Exception.php';
+require '/xampp/htdocs/E-Commerce-Website-System/E-Commerce/src/components/Composer/vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require '/xampp/htdocs/E-Commerce-Website-System/E-Commerce/src/components/Composer/vendor/phpmailer/phpmailer/src/SMTP.php';
+require '/xampp/htdocs/E-Commerce-Website-System/E-Commerce/src/components/Composer/vendor/autoload.php';
 
 
 $conn = mysqli_connect("localhost", "root", "", "db_signup");
@@ -49,7 +50,7 @@ if (isset($_POST['send'])) {
             echo "
             <script>
             alert('OTP has been sent to your email address');
-            document.location.href = '../components/verify.php';
+            document.location.href = '/E-Commerce-Website-System/E-Commerce/src/components/User-and-Guest-Site/auth/verify.php';
             </script>
             ";
         } catch (Exception $e) {
