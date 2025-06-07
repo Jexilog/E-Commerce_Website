@@ -43,19 +43,36 @@ if (isset($_GET['token'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
+    <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
+
+    <style>
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <form id="reset-form" action="" method="post">
-        <h1>Reset Password</h1>
-        <p>Please enter your new password.</p>
-        <?php if ($message) echo "<p>$message</p>"; ?>
-        <?php if (!$password_reset): ?>
-            <input type="password" id="new-password" name="password" placeholder="New Password" required>
-            <br>
-            <input type="password" id="confirm-password" name="confirm_password" placeholder="Confirm Password" required>
-            <br>
-            <button type="submit" id="reset-button">Reset Password</button>
-        <?php endif; ?>
-    </form>
+    <div class="container">
+        <form id="reset-form" action="" method="post">
+            <h1>Reset Password</h1>
+            <p>Please enter your new password.</p>
+            <?php if ($message) echo "<p>$message</p>"; ?>
+            <?php if (!$password_reset): ?>
+                <input type="password" id="password-input" name="password" placeholder="New Password" required>
+                <span class="show-password-label" id="togglePassword" style="cursor:pointer;">
+                    <i class ='bx bx-eye' id="eyeIcon"></i>
+                </span>
+                <br>
+                <input type="password" id="confirm-pass-input" name="confirm_password" placeholder="Confirm Password" required>
+                <span class="show-password-label" id="toggleConPassword" style="cursor:pointer;">
+                    <i class ='bx bx-eye' id="eyeConIcon"></i>
+                </span>
+                <br>
+                <button type="submit" id="reset-button">Reset Password</button>
+            <?php endif; ?>
+        </form>
+    </div>
+    <script src="../script/sign-and-log.js"></script>
 </body>
 </html>
