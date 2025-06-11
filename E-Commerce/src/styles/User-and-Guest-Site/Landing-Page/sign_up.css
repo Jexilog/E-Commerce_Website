@@ -1,0 +1,201 @@
+*
+{
+    box-sizing: border-box;
+    padding: 0%;
+    margin: 0%;
+    color: var(--text_color);
+    font-family: Arial, sans-serif;
+}
+::-webkit-scrollbar
+{
+    display: none;
+}
+body
+{
+    overscroll-behavior: none;
+}
+main
+{
+    height: 100vh;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 100vh;
+    grid-template-areas:  
+    "form img";
+
+    overflow: hidden;
+}
+.img
+{
+    grid-area: img;
+
+    img 
+    {
+        max-width: 100%;
+    }
+}
+.container
+{
+    grid-area: form;
+
+    display: grid;
+    grid-template-columns: 70px 1fr 70px;
+    grid-template-rows: repeat(11, 1fr);
+    grid-template-areas: 
+    ". . ."
+    ". title ."
+    ". text ."
+    ". form ."
+    ". form ."
+    ". form ."
+    ". form ."
+    ". check_box ."
+    ". register_btn ."
+    ". login_link ."
+    ". . .";
+}
+.title
+{
+    grid-area: title;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.text
+{
+    grid-area: text;
+    text-align: center;
+}
+form 
+{
+    grid-area: form;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, 1fr);
+    grid-template-areas:  
+    "name"
+    "email"
+    "pass"
+    "confirm_pass";
+}
+form .name
+{
+    grid-area: name;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 10px;
+
+    input 
+    {
+        height: 50px;
+        width: 100%;
+        padding: 10px;
+        font-size: 15px;
+    }
+}
+form .email
+{
+    grid-area: email;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    input 
+    {
+        height: 50px;
+        width: 100%;
+        padding: 10px;
+        font-size: 15px;
+    }
+}
+form .pass
+{
+    grid-area: pass;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    input 
+    {
+        height: 50px;
+        width: 100%;
+        padding: 10px;
+        font-size: 15px;
+    }
+}
+form .confirm_pass
+{
+    grid-area: confirm_pass;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    input 
+    {
+        height: 50px;
+        width: 100%;
+        padding: 10px;
+        font-size: 15px;
+    }
+}
+.conditions
+{
+    grid-area: check_box;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bolder;
+    color: gray;
+
+    button
+    {
+        color: #3498DB;
+        border: none;
+        font-weight: bolder;
+        background-color: white;
+    }
+}
+.register_btn
+{
+    grid-area: register_btn;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    button
+    {
+        height: 50px;
+        width: 100%;
+        border-radius: 20px;
+        border: none;
+        background-color: #003366;
+        color: white;
+    }
+}
+.login_link
+{
+    grid-area: login_link;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bolder;
+    color: gray;
+
+    a
+    {
+        text-decoration: none;
+        color: #3498DB;
+    }
+}
