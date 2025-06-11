@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password = $_POST['password'];
         $error = loginUser($pdo, $email, $password);
         if ($error === "success") {
-            echo "<script>window.location.href = '/AudioHub/src/dashboard.php';</script>";
+            echo "<script>window.location.href = '/SoundStage/src/dashboard.php';</script>";
             exit;
         }
     }
@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-reveal,  /* <-- to clear the default eye icon in browser */
         input[type="password"]::-ms-clear {
             display: none;
         }
@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #eaf6ff;
             min-height: 100vh;
             display: flex;
-            align-items: center; /* from center to flex-start */
+            align-items: center;
             justify-content: center;
             font-family: 'Segoe UI', sans-serif;
         }
@@ -176,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #000000;
         }
         .flip-card-back {
-            height: 535px !important; /* Adjusted height for register form */
+            height: 535px !important; 
             transform: rotateY(180deg);
         }
         .form-title {
@@ -229,12 +229,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             text-decoration: none !important;
         }
         .form-check-label a:hover {
-            text-decoration: underline; /* or none, if you want no underline on hover */
+            text-decoration: underline; 
         }
         input[type="email"]::placeholder,
         input[type="password"]::placeholder,
         input[type="text"]::placeholder {
-            color:rgba(255, 255, 255, 2 ); /* Change to your desired color */
+            color:rgba(255, 255, 255, 2 ); 
         }
 
         .form-check-input {
@@ -375,13 +375,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // function getDateTime(){
-        //     $timezone = new DateTimeZone('Asia/Manila');
-        //     $datetime = new DateTime();
-        //     $datetime->setTimezone($timezone);
-        //     return $datetime->format('Y\-m\-d\ h:i:s');
-        // }
-
         if ($user) {
             $reset_token = bin2hex(random_bytes(32));
             date_default_timezone_set('Asia/Manila');
@@ -392,17 +385,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fullname = $user['FirstName'] . ' ' . $user['LastName'];
             $reset_link = "http://localhost/AudioHub/src/pages/auth/resetpass.php?token=$reset_token";
 
-            $mail = new PHPMailer(true); // Enable exceptions
+            $mail = new PHPMailer(true); 
             try {
                 $mail->isSMTP();
-                $mail->Host       = 'smtp.gmail.com';  // Replace with your SMTP server
+                $mail->Host       = 'smtp.gmail.com';  
                 $mail->SMTPAuth   = true;
-                $mail->Username   = 'customerservicesoundstage@gmail.com'; // Replace with your SMTP username
-                $mail->Password   = 'uotdoblzaisbokky';    // Replace with your SMTP password or App Password
-                $mail->SMTPSecure = 'ssl';   // Enable TLS encryption, `ssl` also accepted
-                $mail->Port       = 465;      // TCP port to connect to
+                $mail->Username   = 'customerservicesoundstage@gmail.com'; //<- Sender's Email
+                $mail->Password   = 'uotdoblzaisbokky'; //<- App Password   
+                $mail->SMTPSecure = 'ssl'; //<- SSL Encryption  
+                $mail->Port       = 465;   //<- Port for SSL encryption
 
-                //Recipients
+                //Email Composers
                 $mail->setFrom('customerservicesoundstage@gmail.com', 'SoundStage');
                 $mail->addAddress($email, $fullname); 
                 $mail->isHTML(true);                           
@@ -417,7 +410,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         modal.hide();
                         alert('A password reset link has been sent to your email address.');
                     }, 500);
-                </script>";
+                </script>"; // <-Alert if email send successfully
 
             } catch (Exception $e) {
                 echo "<script>
@@ -426,7 +419,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         modal.hide();
                         alert('Message could not be sent. Mailer Error: " . $mail->ErrorInfo . "');
                     }, 500);
-                </script>";
+                </script>"; //<-Alert if email send failed
             }
         } else {
             echo "<script>
@@ -434,8 +427,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     var modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('forgotPasswordModal'));
                     modal.hide();
                     alert('No user found with that email address.');
-                }, 500);
-            </script>";
+                }, 500); 
+            </script>"; //<- Alert if the reciver's email was not found in the database
         }
     }
 ?>
@@ -528,8 +521,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         // Password toggle logic
         document.addEventListener('DOMContentLoaded', function () {
-            // Login password
-            // REMOVE or COMMENT OUT BELOW IF YOU DON'T WANT TOGGLE
+            // Login password eye icon 
             const signinPassword = document.getElementById('signin-password');
             const toggleSigninPassword = document.getElementById('toggleSigninPassword');
             const signinPasswordIcon = document.getElementById('signinPasswordIcon');
@@ -540,7 +532,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                  signinPasswordIcon.classList.toggle('bi-eye-slash');
             });
 
-            // Register password
+            // Register password eye icon
             const signupPassword = document.getElementById('signup-password');
             const toggleSignupPassword = document.getElementById('toggleSignupPassword');
             const signupPasswordIcon = document.getElementById('signupPasswordIcon');
@@ -551,7 +543,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                  signupPasswordIcon.classList.toggle('bi-eye-slash');
             });
 
-            // Register confirm password
+            // Register confirm password eye icon
             const signupConfirm = document.getElementById('signup-confirm');
             const toggleSignupConfirm = document.getElementById('toggleSignupConfirm');
             const signupConfirmIcon = document.getElementById('signupConfirmIcon');
@@ -565,13 +557,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 </body>
 </html>
-
-<!-- OTP Sending Logic (for demonstration purposes, adjust as needed)
-    <?php
-    // When you want to send OTP
-    // $otp = rand(100000, 999999);
-    // $stmt = $pdo->prepare("UPDATE user_accounts SET OTP=? WHERE Email_Add=?");
-    // $stmt->execute([$email]);
-    // mail($email, "Your OTP Code", "Your OTP is: $otp");
-    // ?>
--->
