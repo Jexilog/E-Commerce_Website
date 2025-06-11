@@ -1,0 +1,167 @@
+@font-face {
+  font-family: "Inter";
+  src: url(../fonts/static/Inter_18pt-Regular.ttf) format("truetype");
+}
+
+* {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+}
+
+.container-fluid {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* Sidebar CSS */
+.sidebar {
+    min-height: 100vh;
+    position: fixed;
+    left: 0; top: 0; width: 250px;
+    background: #003366 !important;
+    color: #fff;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2rem;
+}
+.sidebar .nav-link {
+    color: #fff;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+.sidebar .nav-link.active, .sidebar .nav-link:hover {
+    background: #fff;
+    color: #003366 !important;
+    font-weight: bold;
+}
+.sidebar .btn {
+    margin-top: 2rem;
+}
+
+.admin-pfp {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+}
+
+.fw-bold {
+    font-weight: bold !important;
+}
+
+/* Main content */
+.main-content {
+    margin-left: 250px;
+    min-height: 100vh;
+    background: #f7f9fb;
+    /* Remove left/right padding */
+    padding: 0 0 24px 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+/* Add padding only to the main content area, not the header */
+.main-content > main {
+    padding: 0 24px;
+}
+
+/* Dashboard header */
+.main-content > header > nav.navbar {
+    width: 100%;
+    margin-left: 0;
+    border-radius: 0;
+}
+
+.products-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.products-row::-webkit-scrollbar {
+    display: none;
+}
+.product-card {
+    background: #0d3c61;
+    color: #fff;
+    border-radius: 16px;
+    padding: 1.5rem 1rem;
+    margin-bottom: 1.5rem;
+    min-width: 220px;
+    flex: 1 1 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.product-card img {
+    max-width: 60px;
+    max-height: 60px;
+    object-fit: contain;
+}
+.product-card .btn {
+    background: #fff;
+    color: #003366;
+    border: none;
+    margin-top: 0.5rem;
+    transition: background 0.2s, color 0.2s;
+}
+.product-card .btn:hover {
+    background: #003366;
+    color: #fff;
+}
+
+.main-content { margin-left: 250px; }
+.sidebar { min-height: 100vh; position: fixed; left: 0; top: 0; width: 250px; z-index: 100; }
+.product-card-hover {
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.product-card-hover:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.12);
+    border-color: #0d6efd;
+}
+.card-header {
+    border-bottom: 1px solid #f0f0f0;
+}
+#user-alerts .alert { font-size: 0.95rem; }
+
+/* Product Categories Table */
+#product-categories-table tbody {
+    min-height: 240px; /* adjust as needed for your row height */
+    display: block;
+}
+#product-categories-table thead, 
+#product-categories-table tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+#product-categories-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .main-content {
+        padding: 16px 4px;
+    }
+    .main-content { margin-left: 0; }
+    .sidebar { position: relative; width: 100%; min-height: auto; }
+    .products-row { flex-direction: column; }
+    .dashboard-header {
+        left: 0;
+        width: 100%;
+    }
+}
+
+

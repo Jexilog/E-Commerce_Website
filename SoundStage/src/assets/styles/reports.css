@@ -1,0 +1,135 @@
+@font-face {
+  font-family: "Inter";
+  src: url(../fonts/static/Inter_18pt-Regular.ttf) format("truetype");
+}
+
+* {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+}
+
+.container-fluid {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* Sidebar CSS */
+.sidebar {
+    min-height: 100vh;
+    position: fixed;
+    left: 0; top: 0; width: 250px;
+    background: #003366 !important;
+    color: #fff;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2rem;
+}
+.sidebar .nav-link {
+    color: #fff;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+.sidebar .nav-link.active, .sidebar .nav-link:hover {
+    background: #fff;
+    color: #003366 !important;
+    font-weight: bold;
+}
+.sidebar .btn {
+    margin-top: 2rem;
+}
+
+.admin-pfp {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+}
+
+.fw-bold {
+    font-weight: bold !important;
+}
+
+/* Main content */
+.main-content {
+    margin-left: 250px;
+    min-height: 100vh;
+    background: #f2f5f7;
+    padding-bottom: 2rem;
+}
+
+/* Reports header */
+.reports-header {
+    background: #fff;
+    border-bottom: 1px solid #e5e5e5;
+}
+.reports-header .navbar {
+    padding: 0.5rem 1rem 0.5rem 1rem !important;
+    background: transparent !important;
+    border: none;
+    box-shadow: none;
+}
+
+/* Reports main content */
+.report-card {
+    background: #0d3c61;
+    color: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.report-card .bg-white {
+    color: #003366;
+}
+.table thead th {
+    background: #003366;
+    color: #fff;
+}
+
+/* Align nav-tabs with brand and add gap */
+.nav-tabs {
+    margin-bottom: 0;
+    border-bottom: none;
+}
+.nav-tabs .nav-link {
+    border-radius: 0.5rem 1rem 0.5rem 1rem;
+}
+
+/* Reports title */
+.reports-title {
+    font-size: 1.3rem !important; /* or any size you want, e.g., 18px */
+    font-weight: 200;
+    color: #000000;
+    letter-spacing: 0.5px;
+}
+
+/* Avatar and cursor styles */
+.avatar-sm { width: 32px; height: 32px; object-fit: cover; border-radius: 50%; }
+.sortable:hover { cursor: pointer; text-decoration: underline; }
+
+/* Spinner overlay */
+.spinner-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; z-index: 10;
+}
+
+/* Modal styles */
+#orderDetailsModal .modal-content {
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+}
+#orderDetailsModal .modal-header {
+    border-bottom: 1px solid #f0f0f0;
+}
+#orderDetailsModal .modal-title {
+    font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .main-content { margin-left: 0; }
+    .sidebar { position: relative; width: 100%; min-height: auto; }
+}
+
+
