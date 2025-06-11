@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Report | AudioHub</title>
+    <title>Sales Report | SoundStage</title>
     <link rel="icon" href="../../assets/icons/website-icon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/styles/reports.css">
@@ -17,7 +17,7 @@
     <div class="main-content flex-grow-1">
         <header>
             <div class="d-flex align-items-center px-4 pb-2 p-2" style="background: #ffffff; border-bottom: 1px solid #e5e5e5;">
-                <span class="reports-title me-4">AudioHub</span>
+                <span class="reports-title me-4">SoundStage</span>
                 <ul class="nav nav-tabs gap-2">
                     <li class="nav-item">
                         <a class="nav-link<?= basename($_SERVER['PHP_SELF'])=='reports.php'?' active':'' ?>" href="reports.php">Sales Reports</a>

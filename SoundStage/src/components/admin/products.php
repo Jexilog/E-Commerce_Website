@@ -1,24 +1,28 @@
 <?php
 // DB connection
-$conn = new mysqli("localhost", "root", "", "testing");
+$conn = new mysqli("localhost", "root", "", "tangenamo-jeckho");
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
+
+// Category mapping
+$category_map = [
+    'iem' => 1,
+    'headphones' => 3,
+    'earbuds' => 4,
+    'accessories' => 2,
+    'dap' => 5,
+    'speaker' => 6
+];
+
+// Get active tab and page
+$tab = isset($_GET['tab']) && isset($category_map[$_GET['tab']]) ? $_GET['tab'] : 'iem';
+$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+$category_id = $category_map[$tab];
 
 // Pagination setup
 $maxRows = 5;
-
-// Get active tab and page
-$tab = isset($_GET['tab']) ? $_GET['tab'] : 'iem'; // default to IEM
-$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-
-// Determine category ID based on tab
-$category_id = ($tab === 'accessories') ? 2 : 1;
-
-// Count total products for the active category
 $countRes = $conn->query("SELECT COUNT(*) as total FROM product_tbl WHERE Category_ID = $category_id");
 $totalRows = $countRes->fetch_assoc()['total'];
 $totalPages = max(1, ceil($totalRows / $maxRows));
-
-// Calculate offset
 $offset = ($page - 1) * $maxRows;
 
 // Fetch paginated products for the active category
@@ -29,8 +33,15 @@ $sql = "SELECT p.*, c.CategoryName FROM product_tbl p
 $result = $conn->query($sql);
 
 // For tab UI
-$iem_active = ($tab === 'iem') ? 'active show' : '';
-$acc_active = ($tab === 'accessories') ? 'active show' : '';
+$tab_active = [
+    'iem' => '',
+    'headphones' => '',
+    'earbuds' => '',
+    'accessories' => '',
+    'dap' => '',
+    'speaker' => ''
+];
+$tab_active[$tab] = 'active show';
 
 // Fetch recent activity (add this before your HTML)
 $activityResult = $conn->query("SELECT * FROM recent_activity ORDER BY activity_time DESC LIMIT 10");
@@ -46,7 +57,7 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products | AudioHub</title>
+    <title>Products | SoundStage</title>
     <link rel="icon" href="../../assets/icons/website-icon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/styles/products.css">
@@ -60,7 +71,7 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
         <!-- Header -->
         <header>
             <div class="d-flex justify-content-between align-items-center px-4 py-2" style="background: #ffffff; border-bottom: 1px solid #e5e5e5;">
-                <span class="brand-title">AudioHub</span>
+                <span class="brand-title">SoundStage</span>
                 <div>
                     <button class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#importModal">
                         <i class="bi bi-upload"></i> Import
@@ -79,7 +90,19 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
                     <a class="nav-link <?= $tab === 'iem' ? 'active' : '' ?>" href="?tab=iem&page=1">In-Ear Monitor</a>
                 </li>
                 <li class="nav-item" role="presentation">
+                    <a class="nav-link <?= $tab === 'headphones' ? 'active' : '' ?>" href="?tab=headphones&page=1">Headphones</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link <?= $tab === 'earbuds' ? 'active' : '' ?>" href="?tab=earbuds&page=1">True-Wireless Stereo</a>
+                </li>
+                <li class="nav-item" role="presentation">
                     <a class="nav-link <?= $tab === 'accessories' ? 'active' : '' ?>" href="?tab=accessories&page=1">Accessories</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link <?= $tab === 'dap' ? 'active' : '' ?>" href="?tab=dap&page=1">Digital Audio Player</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link <?= $tab === 'speaker' ? 'active' : '' ?>" href="?tab=speaker&page=1">Speaker</a>
                 </li>
             </ul>
         </header>
@@ -93,8 +116,12 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
                 <div class="col-md-2">
                     <select class="form-select">
                         <option selected>All Categories</option>
-                        <option>IEM</option>
-                        <option>Accessories</option>
+                        <option>In-Ear Monitor</option>
+                        <option>Headphones</option>
+                        <option>True-Wireless Stereo</option>
+                        <option>Audio Accessories</option>
+                        <option>Digital Audio Player</option>
+                        <option>Speaker</option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -149,86 +176,24 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
         <!-- Main Content: Only show the active tab's table -->
         <main class="p-4 pt-0">
             <div class="tab-content" id="categoryTabsContent">
-                <!-- IEM Tab -->
-                <div class="tab-pane fade <?= $iem_active ?>" id="iem" role="tabpanel">
-                    <?php if ($tab === 'iem'): ?>
+                <?php
+                $tab_labels = [
+                    'iem' => 'In-Ear Monitor',
+                    'headphones' => 'Headphones',
+                    'earbuds' => 'True-Wireless Stereo',
+                    'accessories' => 'Accessories',
+                    'dap' => 'Digital Audio Player',
+                    'speaker' => 'Speaker'
+                ];
+                foreach ($tab_labels as $key => $label):
+                ?>
+                <div class="tab-pane fade <?= $tab_active[$key] ?>" id="<?= $key ?>" role="tabpanel">
+                    <?php if ($tab === $key): ?>
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
                             <thead class="table-light">
                                 <tr>
-                                    <th><input type="checkbox" id="selectAllIEM"></th>
-                                    <th class="col-Product_ID">ID</th>
-                                    <th class="col-ProductName">Name</th>
-                                    <th class="col-Description">Description</th>
-                                    <th class="col-Category_ID">Category</th>
-                                    <th class="col-Brand">Brand</th>
-                                    <th class="col-Price">Price</th>
-                                    <th class="col-Stock_QTY">Stock</th>
-                                    <th class="col-Image_URL">Image</th>
-                                    <th class="col-Added_AT">Added</th>
-                                    <th>Act</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php while($row = $result->fetch_assoc()): ?>
-                                    <?php if($row['Category_ID'] == 1): // In-Ear Monitor ?>
-                                    <tr>
-                                        <td><input type="checkbox" class="row-checkbox" value="<?= $row['Product_ID'] ?>"></td>
-                                        <td class="col-Product_ID"><?= $row['Product_ID'] ?></td>
-                                        <td class="col-ProductName"><?= htmlspecialchars($row['ProductName']) ?></td>
-                                        <td class="col-Description"><?= htmlspecialchars($row['Description']) ?></td>
-                                        <td class="col-Category_ID"><?= htmlspecialchars($row['CategoryName']) ?></td>
-                                        <td class="col-Brand"><?= htmlspecialchars($row['Brand']) ?></td>
-                                        <td class="col-Price">₱<?= number_format($row['Price'], 2) ?></td>
-                                        <td class="col-Stock_QTY"><?= $row['Stock_QTY'] ?></td>
-                                        <td class="col-Image_URL">
-                                            <?php if($row['Image_URL']): ?>
-                                                <img src="<?= htmlspecialchars($row['Image_URL']) ?>"
-                                                     alt="Product"
-                                                     class="img-thumbnail product-img"
-                                                     style="width:40px;height:40px;object-fit:cover;cursor:pointer;"
-                                                     data-bs-toggle="modal"
-                                                     data-bs-target="#imgModal"
-                                                     data-img="<?= htmlspecialchars($row['Image_URL']) ?>">
-                                            <?php endif; ?>
-                                        </td>
-                                        <td class="col-Added_AT"><?= $row['Added_AT'] ?></td>
-                                        <td>
-                                          <div class="dropdown">
-                                            <button class="btn btn-link text-dark p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                              <i class="bi bi-three-dots-vertical fs-5"></i>
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                              <li>
-                                                <a class="dropdown-item edit-btn" href="#" data-id="<?= $row['Product_ID'] ?>">
-                                                  <i class="bi bi-pencil me-2"></i>Edit
-                                                </a>
-                                              </li>
-                                              <li>
-                                                <a class="dropdown-item delete-btn text-danger" href="#" data-id="<?= $row['Product_ID'] ?>">
-                                                  <i class="bi bi-trash me-2"></i>Delete
-                                                </a>
-                                              </li>
-                                            </ul>
-                                          </div>
-                                        </td>
-                                    </tr>
-                                    <?php endif; ?>
-                                <?php endwhile; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                    <?php endif; ?>
-                </div>
-
-                <!-- Accessories Tab -->
-                <div class="tab-pane fade <?= $acc_active ?>" id="accessories" role="tabpanel">
-                    <?php if ($tab === 'accessories'): ?>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th><input type="checkbox" id="selectAllACC"></th>
+                                    <th><input type="checkbox" id="selectAll<?= strtoupper($key) ?>"></th>
                                     <th class="col-Product_ID">ID</th>
                                     <th class="col-ProductName">Name</th>
                                     <th class="col-Description">Description</th>
@@ -243,10 +208,8 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
                             </thead>
                             <tbody>
                                 <?php
-                                // Reset result pointer and fetch again for Accessories
                                 $result->data_seek(0);
                                 while($row = $result->fetch_assoc()):
-                                    if($row['Category_ID'] == 2): // Accessories
                                 ?>
                                 <tr>
                                     <td><input type="checkbox" class="row-checkbox" value="<?= $row['Product_ID'] ?>"></td>
@@ -260,12 +223,12 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
                                     <td class="col-Image_URL">
                                         <?php if($row['Image_URL']): ?>
                                             <img src="<?= htmlspecialchars($row['Image_URL']) ?>"
-                                            alt="Product"
-                                            class="img-thumbnail product-img"
-                                            style="width:40px;height:40px;object-fit:cover;cursor:pointer;"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#imgModal"
-                                            data-img="<?= htmlspecialchars($row['Image_URL']) ?>">
+                                                 alt="Product"
+                                                 class="img-thumbnail product-img"
+                                                 style="width:40px;height:40px;object-fit:cover;cursor:pointer;"
+                                                 data-bs-toggle="modal"
+                                                 data-bs-target="#imgModal"
+                                                 data-img="<?= htmlspecialchars($row['Image_URL']) ?>">
                                         <?php endif; ?>
                                     </td>
                                     <td class="col-Added_AT"><?= $row['Added_AT'] ?></td>
@@ -289,15 +252,13 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
                                       </div>
                                     </td>
                                 </tr>
-                                <?php
-                                    endif;
-                                endwhile;
-                                ?>
+                                <?php endwhile; ?>
                             </tbody>
                         </table>
                     </div>
                     <?php endif; ?>
                 </div>
+                <?php endforeach; ?>
             </div>
             <div class="d-flex justify-content-end mt-3">
                 <nav aria-label="Page navigation">
@@ -322,30 +283,37 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
         <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
-                    <form>
+                    <form id="editProductForm" enctype="multipart/form-data">
                         <div class="modal-header">
                             <h5 class="modal-title" id="editModalLabel">Edit Product</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <!-- Product edit fields here -->
+                            <input type="hidden" name="Product_ID" id="editProductID">
                             <div class="mb-3">
                                 <label class="form-label">Product Name</label>
-                                <input type="text" class="form-control" placeholder="Edit your product name here">
+                                <input type="text" class="form-control" name="ProductName" id="editProductName" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Description</label>
-                                <input type="text" class="form-control" placeholder="Edit your product description here">
+                                <input type="text" class="form-control" name="Description" id="editDescription">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Brand</label>
-                                <input type="text" class="form-control" placeholder="Edit your product brand here">
+                                <input type="text" class="form-control" name="Brand" id="editBrand">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Price</label>
-                                <input type="number" class="form-control" placeholder="Edit your product price here" step="0.01">
+                                <input type="number" class="form-control" name="Price" id="editPrice" step="0.01">
                             </div>
-                            <!-- Add more fields as needed -->
+                            <div class="mb-3">
+                                <label class="form-label">Image</label>
+                                <div>
+                                    <img id="editImgPreview" src="" alt="Product Image" style="width:80px;height:80px;object-fit:cover;border:1px solid #ddd;margin-bottom:8px;">
+                                </div>
+                                <input type="file" class="form-control" name="Image_URL" id="editImageInput" accept="image/*">
+                                <input type="hidden" name="Current_Image_URL" id="editCurrentImg">
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -522,12 +490,51 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
                 });
             });
 
-            // Edit button logic
+            // Edit button logic (fetch product data)
             document.querySelectorAll('.edit-btn').forEach(function(btn) {
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    var editModal = new bootstrap.Modal(document.getElementById('editModal'));
-                    editModal.show();
+                    const productId = this.dataset.id;
+                    fetch('get_product.php?id=' + productId)
+                        .then(res => res.json())
+                        .then(data => {
+                            document.getElementById('editProductID').value = data.Product_ID;
+                            document.getElementById('editProductName').value = data.ProductName;
+                            document.getElementById('editDescription').value = data.Description;
+                            document.getElementById('editBrand').value = data.Brand;
+                            document.getElementById('editPrice').value = data.Price;
+                            document.getElementById('editImgPreview').src = data.Image_URL || '';
+                            document.getElementById('editCurrentImg').value = data.Image_URL || '';
+                            var editModal = new bootstrap.Modal(document.getElementById('editModal'));
+                            editModal.show();
+                        });
+                });
+            });
+
+            // Preview image on file select
+            document.getElementById('editImageInput').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    document.getElementById('editImgPreview').src = URL.createObjectURL(file);
+                }
+            });
+
+            // Save changes via AJAX
+            document.getElementById('editProductForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                fetch('update_product.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(resp => {
+                    if(resp.success) {
+                        alert('Product updated!');
+                        location.reload(); // Or update the row dynamically
+                    } else {
+                        alert('Update failed: ' + resp.error);
+                    }
                 });
             });
 

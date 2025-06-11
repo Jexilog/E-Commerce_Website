@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Financial Report | AudioHub</title>
+    <title>Financial Report | SoundStage</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../../assets/icons/website-icon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,7 +16,7 @@
     <div class="main-content flex-grow-1">
         <header>
             <div class="d-flex align-items-center px-4 pb-2 p-2" style="background: #fff; border-bottom: 1px solid #e5e5e5;">
-                <span class="reports-title me-4">AudioHub</span>
+                <span class="reports-title me-4">SoundStage</span>
                 <ul class="nav nav-tabs gap-2">
                     <li class="nav-item">
                         <a class="nav-link" href="reports.php">Sales Reports</a>

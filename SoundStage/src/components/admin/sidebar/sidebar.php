@@ -2,8 +2,8 @@
 <aside class="sidebar bg-primary text-white p-3 d-flex flex-column align-items-stretch" style="min-height:100vh;position:fixed;left:0;top:0;width:250px;z-index:100;">
     <div class="mb-3 text-center">
         <h5>Admin</h5>
-        <img class="admin-pfp rounded-circle mb-2" src="../../assets/images/carlos0.png" alt="admin-pfp" style="width: 100px; height: 100px;">
-        <div class="fw-bold pt-1">Admin Carlos</div>
+        <img class="admin-pfp rounded-circle mb-2" src="../../assets/images/rep.jpg" alt="admin-pfp" style="width: 100px; height: 100px;">
+        <div class="fw-bold pt-1">Admin Jeckho</div>
     </div>
     <nav class="nav flex-column w-100">
         <a class="nav-link text-white<?= basename($_SERVER['PHP_SELF'])=='dashboard.php'?' active':'' ?>" href="dashboard.php"><i class="bi bi-speedometer2"></i> Dashboard</a>

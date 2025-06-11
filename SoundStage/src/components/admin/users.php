@@ -9,7 +9,7 @@ $maxRows = isset($_GET['maxRows']) ? intval($_GET['maxRows']) : 10;
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 
 // Connect to DB
-$conn = new mysqli("localhost", "root", "", "testing");
+$conn = new mysqli("localhost", "root", "", "tangenamo-jeckho");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Userlist | AudioHub</title>
+    <title>Userlist | SoundStage</title>
     <link rel="icon" href="../../assets/icons/website-icon.png" type="image/x-icon">
     <link rel="stylesheet" href="../../assets/bootstrap/bootstrap-5.1.3-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../assets/styles/users.css">
@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
     <div class="main-content flex-grow-1" style="margin-left:250px; min-height:100vh; background:#fafbfc;">
         <!-- Header -->
         <header class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4 py-2 mb-4">
-            <a class="navbar-brand fw-300" href="dashboard.php">AudioHub</a>
+            <a class="navbar-brand fw-300" href="dashboard.php">SoundStage</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>

@@ -88,6 +88,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <option value="">Select Category</option>
                                             <option value="1">In-Ear Monitor</option>
                                             <option value="2">Accessories</option>
+                                            <option value="3">Headphones</option>
+                                            <option value="4">True-Wireless Stereo</option>
+                                            <option value="5">Digital Audio Player</option>
+                                            <option value="6">Speaker</option>
                                         </select>
                                         <div class="invalid-feedback">Category is required.</div>
                                     </div>
