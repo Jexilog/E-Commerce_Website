@@ -1,0 +1,102 @@
+@font-face {
+  font-family: "Inter";
+  src: url(../fonts/static/Inter_18pt-Regular.ttf) format("truetype");
+}
+
+* {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+}
+
+.container-fluid {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* Sidebar styles from dashboard.css */
+.sidebar {
+    min-height: 100vh;
+    position: fixed;
+    left: 0; top: 0; width: 250px;
+    background: #003366 !important;
+    color: #fff;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2rem;
+}
+.sidebar .nav-link {
+    color: #fff;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+.sidebar .nav-link.active, .sidebar .nav-link:hover {
+    background: #fff;
+    color: #003366 !important;
+    font-weight: bold;
+}
+.sidebar .btn {
+    margin-top: 2rem;
+}
+
+.admin-pfp {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+}
+
+.fw-bold {
+    font-weight: bold !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .main-content { margin-left: 0; }
+    .sidebar { position: relative; width: 100%; min-height: auto; }
+}
+
+/* Sidebar and main-content styles (if needed) */
+
+/* Category nav-tab hover effect (based on reports.php) */
+.category-tabs .nav-link {
+    color: #333;
+    border: none;
+    border-radius: 0;
+    transition: background 0.2s, color 0.2s;
+}
+.category-tabs .nav-link.active,
+.category-tabs .nav-link:hover {
+    background: #f5f5f5;
+    color: #0d6efd;
+    font-weight: 500;
+}
+.category-tabs {
+    border-bottom: 1px solid #e5e5e5;
+}
+.brand-title {
+    font-size: 1.3rem !important;
+    font-weight: 200;
+    color: #000000;
+    letter-spacing: 1px;
+}
+
+.table-responsive {
+    overflow-y: auto;
+    scrollbar-width: thin;         /* For Firefox */
+    scrollbar-color: #e5e5e5 #fff; /* For Firefox */
+    max-height: 500px;             /* Set a max height if you want scrolling only after a certain height */
+}
+
+/* Hide scrollbar for Chrome, Edge, Safari */
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+    background: transparent;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #e5e5e5;
+    border-radius: 4px;
+}
+
+
