@@ -6,15 +6,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Contact Us | HzOne</title>
+    <title>Contact Us | SoundStage</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="/AudioHub/src/assets/icons/website-icon.png" type="image/x-icon">
+    <link rel="icon" href="/System/SoundStage/src/assets/icons/website-icon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #181c24 0%, #2a3a4f 100%);
-            color: #eaf6ff;
+            background: #ffffff;
+            color: #000;
             font-family: 'Segoe UI', sans-serif;
         }
         .contact-main {
@@ -23,7 +23,7 @@
             padding: 3rem 1rem 2rem 1rem;
         }
         .contact-hero {
-            background: linear-gradient(120deg, #232b3e 60%, #1a2233 100%);
+            background: #003366;
             border-radius: 1.5rem;
             box-shadow: 0 8px 40px 0 rgba(126,203,255,0.10);
             padding: 2.5rem 2rem 2rem 2rem;
@@ -47,14 +47,14 @@
             margin-bottom: 2rem;
         }
         .contact-section-title {
-            color: #7ecbff;
+            color: #003366;
             font-size: 1.7rem;
             font-weight: bold;
             margin-bottom: 1.2rem;
             letter-spacing: 1px;
         }
         .contact-section-desc {
-            color: #b3c7e6;
+            color: #003366;
             font-size: 1.1rem;
             margin-bottom: 2rem;
         }
@@ -65,7 +65,7 @@
             margin-bottom: 2.5rem;
         }
         .contact-info-card {
-            background: rgba(34, 44, 66, 0.85);
+            background: #003366;
             border-radius: 1.2rem;
             padding: 1.5rem 1.2rem;
             color: #eaf6ff;
@@ -95,7 +95,7 @@
             font-size: 1rem;
         }
         .contact-map-section {
-            background: rgba(34, 44, 66, 0.92);
+            background: #003366;
             border-radius: 1.2rem;
             padding: 1.5rem 2rem;
             margin-bottom: 2.5rem;
@@ -108,7 +108,7 @@
             margin-bottom: 1rem;
         }
         .contact-form-section {
-            background: #232b3e;
+            background: #003366;
             border-radius: 1.2rem;
             padding: 2rem 2.5rem;
             color: #eaf6ff;
@@ -133,7 +133,7 @@
             text-align: center;
         }
         .contact-social a {
-            color: #7ecbff;
+            color: #003366;
             margin: 0 1rem;
             font-size: 2rem;
             transition: color 0.2s;
@@ -160,7 +160,7 @@
         <!-- Hero Section -->
         <div class="contact-hero mb-5">
             <div class="contact-hero-title">
-                <span class="contact-hero-highlight">Contact</span> HzOne
+                <span class="contact-hero-highlight">Contact</span> SoundStage
             </div>
             <div class="contact-hero-desc">
                 We’d love to hear from you! Whether you have a question about our products, need support, want to partner, or just want to say hello—our team is ready to help.
@@ -177,7 +177,7 @@
                 <div class="contact-info-icon"><i class="bi bi-envelope"></i></div>
                 <div class="contact-info-title">Email</div>
                 <div class="contact-info-desc">
-                    <a href="mailto:support@hzone.ph" style="color:#7ecbff;">support@hzone.ph</a>
+                    <a href="mailto:support@soundstage.ph" style="color:#7ecbff;">support@SoundStage.ph</a>
                 </div>
             </div>
             <div class="contact-info-card">
@@ -191,7 +191,7 @@
                 <div class="contact-info-icon"><i class="bi bi-geo-alt"></i></div>
                 <div class="contact-info-title">Visit Us</div>
                 <div class="contact-info-desc">
-                    123 AudioHub St., Makati City, Philippines
+                    123 SoundStage Inc. St., Makati City, Philippines
                 </div>
             </div>
             <div class="contact-info-card">
@@ -247,10 +247,10 @@
         <div class="contact-social mt-5">
             <span class="contact-section-title" style="font-size:1.2rem;"><i class="bi bi-share"></i> Connect with Us</span>
             <div class="mt-2">
-                <a href="https://facebook.com/hzoneph" target="_blank" title="Facebook"><i class="bi bi-facebook"></i></a>
-                <a href="https://instagram.com/hzoneph" target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
-                <a href="https://twitter.com/hzoneph" target="_blank" title="Twitter"><i class="bi bi-twitter-x"></i></a>
-                <a href="https://youtube.com/@hzoneph" target="_blank" title="YouTube"><i class="bi bi-youtube"></i></a>
+                <a href="https://facebook.com/SoundStageph" target="_blank" title="Facebook"><i class="bi bi-facebook"></i></a>
+                <a href="https://instagram.com/SoundStageph" target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
+                <a href="https://twitter.com/SoundStageph" target="_blank" title="Twitter"><i class="bi bi-twitter-x"></i></a>
+                <a href="https://youtube.com/@SoundStageph" target="_blank" title="YouTube"><i class="bi bi-youtube"></i></a>
             </div>
         </div>
     </div>

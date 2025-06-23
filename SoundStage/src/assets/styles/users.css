@@ -69,6 +69,16 @@
     overflow: visible !important;
 }
 
+.form-select-sm {
+    font-size: 0.875rem; /* Adjust as needed */
+    padding: 0.25rem 0.5rem; /* Adjust as needed */
+}
+
+.table td .badge {
+    font-size: 0.875rem;
+    padding: 0.3rem 0.6rem;
+    display: inline-block; /* Add this line */
+}
 /* Responsive adjustments */
 @media (max-width: 991px) {
     .main-content { margin-left: 0; }

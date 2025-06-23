@@ -11,12 +11,12 @@
 <body>
 
     <div style="background: transparent; padding: 40px 0;">
-        <div style="max-width: 95%; margin: 0 auto; background: #181c24; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: center; min-height: 190px;">
+        <div style="max-width: 95%; margin: 0 auto; background: #003366; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: center; min-height: 190px;">
             <div style="display: flex; align-items: center; gap: 40px;">
                 <!-- Logo -->
                 <div style="text-align: center;">
-                    <img src="../../assets/images/iem-logo.jpg" alt="Logo" style="height: 80px; margin-bottom: 10px;">
-                    <div style="font-size: 18px; color: #fff;">AUDIOHUB</div>
+                    <img src="../../assets/icons/website-icon.png" alt="Logo" style="height: 80px; margin-bottom: 10px;">
+                    <div style="font-size: 18px; color: #fff;">SoundStage</div>
                 </div>
                 <!-- Description -->
                 <div style="font-size: 22px; color: #fff; font-family: 'Montserrat', Arial, sans-serif;">

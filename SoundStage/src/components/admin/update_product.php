@@ -1,5 +1,10 @@
 <?php
-$conn = new mysqli("localhost", "root", "", "tangenamo-jeckho");
+$conn = new mysqli("localhost", "root", "", "db_system");
+
+if ($conn->connect_error) {
+    die(json_encode(['success' => false, 'error' => 'Connection failed: ' . $conn->connect_error]));
+}
+
 $id = (int)$_POST['Product_ID'];
 $name = $conn->real_escape_string($_POST['ProductName']);
 $desc = $conn->real_escape_string($_POST['Description']);
@@ -19,15 +24,22 @@ if(isset($_FILES['Image_URL']) && $_FILES['Image_URL']['error'] == 0) {
 }
 
 $sql = "UPDATE product_tbl SET 
-    ProductName='$name',
-    Description='$desc',
-    Brand='$brand',
-    Price=$price,
-    Image_URL='$imageUrl'
-    WHERE Product_ID=$id";
-if($conn->query($sql)) {
-    echo json_encode(['success'=>true]);
+    ProductName=?,
+    Description=?,
+    Brand=?,
+    Price=?,
+    Image_URL=?
+    WHERE Product_ID=?";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("sssdsi", $name, $desc, $brand, $price, $imageUrl, $id);
+
+if ($stmt->execute()) {
+    echo json_encode(['success' => true]);
 } else {
-    echo json_encode(['success'=>false, 'error'=>$conn->error]);
+    echo json_encode(['success' => false, 'error' => $stmt->error]);
 }
+
+$stmt->close();
+$conn->close();
 ?>

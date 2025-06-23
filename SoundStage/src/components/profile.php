@@ -18,13 +18,13 @@ if (isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Setting | AudioHub</title>
+    <title>Profile Setting | SoundStage</title>
     <link rel="icon" href="../assets/icons/website-icon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body { 
-            background: linear-gradient(135deg, #181c24 0%, #2a3a4f 100%); 
+            background: #ffffff; 
             font-family: 'Segoe UI', sans-serif; 
         }
         .container.py-5.min-vh-100 {
@@ -40,7 +40,7 @@ if (isset($_SESSION['user_id'])) {
         }
         .settings-sidebar {
             min-width: 240px;
-            background: #1a2233;
+            background: #003366;
             border-radius: 1rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             padding: 1rem 1.5rem;
@@ -101,17 +101,17 @@ if (isset($_SESSION['user_id'])) {
                     <h4 class="fw-bold mb-4 text-light">Settings</h4>
                     <ul class="nav flex-column gap-2" id="sidebar-nav">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#" onclick="showTab('account');return false;" id="tab-account">
+                            <a class="nav-link active text-primary" href="#" onclick="showTab('account');return false;" id="tab-account">
                                 <i class="bi bi-person-circle"></i> Account Settings
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="showTab('security');return false;" id="tab-security">
+                            <a class="nav-link text-primary" href="#" onclick="showTab('security');return false;" id="tab-security">
                                 <i class="bi bi-shield-lock"></i> Security Settings
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="showTab('privacy');return false;" id="tab-privacy">
+                            <a class="nav-link text-primary" href="#" onclick="showTab('privacy');return false;" id="tab-privacy">
                                 <i class="bi bi-shield-check"></i> Privacy Controls
                             </a>
                         </li>

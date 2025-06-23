@@ -7,18 +7,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brands | HzOne</title>
+    <title>Brands | SoundStage</title>
     <link rel="icon" href="../assets/icons/website-icon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #181c24 0%, #2a3a4f 100%);
-            color: #222;
+            background: #ffffff;
+            color: #000000;
             font-family: 'Segoe UI', sans-serif;
         }
         .main-content {
-            background: linear-gradient(120deg, #232b3e 60%, #1a2233 100%);
+            background: #003366;
             border-radius: 18px;
             box-shadow: 0 4px 24px rgba(0,0,0,0.07);
             padding: 2.5rem 2rem 2.5rem 2rem !important;
@@ -144,7 +144,7 @@
     <?php include '../components/header/header.php'; ?>
 
     <div class="mt-4 mb-4">
-        <h1 class="mb-3 text-center text-light">Overview of Brands</h1>
+        <h1 class="mb-3 text-center text-primary">Overview of Brands</h1>
         <p class="text-center mb-3 text-secondary">
             Discover the brands we trust and use for delivering the best audio experience.<br>
             Each brand brings unique strengths and innovations to our collection.

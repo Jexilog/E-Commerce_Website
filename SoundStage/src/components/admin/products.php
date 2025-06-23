@@ -1,6 +1,7 @@
 <?php
+session_start();
 // DB connection
-$conn = new mysqli("localhost", "root", "", "tangenamo-jeckho");
+$conn = new mysqli("localhost", "root", "", "db_system");
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 
 // Category mapping
@@ -50,6 +51,40 @@ $activityResult = $conn->query("SELECT * FROM recent_activity ORDER BY activity_
 $totalProducts = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl")->fetch_assoc()['cnt'];
 $lowStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_QTY <= 5")->fetch_assoc()['cnt'];
 $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_QTY = 0")->fetch_assoc()['cnt'];
+
+// Handle search, stock status, and sorting
+$search_term = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
+$stock_status = isset($_GET['stock']) ? $_GET['stock'] : 'all';
+$sort_by = isset($_GET['sort']) ? $_GET['sort'] : 'name';
+// Build the WHERE clause based on search and stock status
+$where_clause = "WHERE p.Category_ID = $category_id";
+
+if (!empty($search_term)) {
+    $where_clause .= " AND (p.ProductName LIKE '%$search_term%' OR p.Description LIKE '%$search_term%')";
+}
+if ($stock_status === 'in') {
+    $where_clause .= " AND p.Stock_QTY > 0";
+} elseif ($stock_status === 'out') {
+    $where_clause .= " AND p.Stock_QTY = 0";
+}
+
+$order_by_clause = "ORDER BY p.ProductName ASC"; // Default sorting
+
+if ($sort_by === 'price_asc') {
+    $order_by_clause = "ORDER BY p.Price ASC";
+} elseif ($sort_by === 'price_desc') {
+    $order_by_clause = "ORDER BY p.Price DESC";
+} elseif ($sort_by === 'stock') {
+    $order_by_clause = "ORDER BY p.Stock_QTY DESC";
+}
+
+// Fetch products with the updated WHERE and ORDER BY clauses
+$sql = "SELECT p.*, c.CategoryName FROM product_tbl p
+        LEFT JOIN category_tbl c ON p.Category_ID = c.Category_ID
+        $where_clause
+        $order_by_clause
+        LIMIT $maxRows OFFSET $offset";
+$result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -111,7 +146,7 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
         <section class="px-4 pt-3">
             <form class="row g-2 align-items-center mb-3">
                 <div class="col-md-4">
-                    <input type="text" class="form-control" placeholder="Search products...">
+                    <input type="text" class="form-control" placeholder="Search products..." value="<?php echo htmlspecialchars($search_term); ?>">
                 </div>
                 <div class="col-md-2">
                     <select class="form-select">
@@ -119,25 +154,24 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
                         <option>In-Ear Monitor</option>
                         <option>Headphones</option>
                         <option>True-Wireless Stereo</option>
-                        <option>Audio Accessories</option>
+                        <option>Accessories</option>
                         <option>Digital Audio Player</option>
                         <option>Speaker</option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     <select class="form-select">
-                        <option selected>Stock Status</option>
-                        <option>In Stock</option>
-                        <option>Out of Stock</option>
+                        <option value="all" <?php echo $stock_status === 'all' ? 'selected' : ''; ?>>All Stock Status</option>
+                        <option value="in" <?php echo $stock_status === 'in' ? 'selected' : ''; ?>>In Stock</option>
+                        <option value="out" <?php echo $stock_status === 'out' ? 'selected' : ''; ?>>Out of Stock</option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     <select class="form-select">
-                        <option selected>Sort by</option>
-                        <option>Name</option>
-                        <option>Price: Low to High</option>
-                        <option>Price: High to Low</option>
-                        <option>Stock</option>
+                        <option value="name" <?php echo $sort_by === 'name' ? 'selected' : ''; ?>>Sort by Name</option>
+                        <option value="price_asc" <?php echo $sort_by === 'price_asc' ? 'selected' : ''; ?>>Price: Low to High</option>
+                        <option value="price_desc" <?php echo $sort_by === 'price_desc' ? 'selected' : ''; ?>>Price: High to Low</option>
+                        <option value="stock" <?php echo $sort_by === 'stock' ? 'selected' : ''; ?>>Sort by Stock</option>
                     </select>
                 </div>
                 <div class="col-md-2 text-end">
@@ -149,7 +183,7 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
             <div class="mb-2">
                 <button class="btn btn-danger btn-sm" id="bulkDeleteBtn" disabled>
                     <i class="bi bi-trash"></i> Delete Selected
-                </button>
+                </button> 
                 <button class="btn btn-secondary btn-sm" id="bulkEditBtn" disabled>
                     <i class="bi bi-pencil"></i> Edit Selected
                 </button>
@@ -324,7 +358,7 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
             </div>
         </div>
 
-        <!-- Delete Confirmation Modal -->
+         <!-- Delete Confirmation Modal -->
         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -337,12 +371,12 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-danger">Delete</button>
+                        <button type="button" class="btn btn-danger"  id="confirmDeleteBtn">Delete</button>
                     </div>
                 </div>
             </div>
         </div>
-
+        
         <!-- Import Modal -->
         <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -479,10 +513,11 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
     <!-- Add your JS for sorting, filtering, pagination, bulk actions, etc. -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+     <script>
+  document.addEventListener('DOMContentLoaded', function() {
             // Image click to view
             document.querySelectorAll('.product-img').forEach(function(img) {
                 img.addEventListener('click', function() {
@@ -498,18 +533,26 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
                     fetch('get_product.php?id=' + productId)
                         .then(res => res.json())
                         .then(data => {
-                            document.getElementById('editProductID').value = data.Product_ID;
-                            document.getElementById('editProductName').value = data.ProductName;
-                            document.getElementById('editDescription').value = data.Description;
-                            document.getElementById('editBrand').value = data.Brand;
-                            document.getElementById('editPrice').value = data.Price;
-                            document.getElementById('editImgPreview').src = data.Image_URL || '';
-                            document.getElementById('editCurrentImg').value = data.Image_URL || '';
-                            var editModal = new bootstrap.Modal(document.getElementById('editModal'));
-                            editModal.show();
+                            populateEditModal(data);
+                        })
+                         .catch(error => {
+                            console.error('Error fetching product data:', error);
+                            alert('Failed to fetch product data. Please check the console.');
                         });
                 });
             });
+
+            function populateEditModal(data) {
+                document.getElementById('editProductID').value = data.Product_ID;
+                document.getElementById('editProductName').value = data.ProductName;
+                document.getElementById('editDescription').value = data.Description;
+                document.getElementById('editBrand').value = data.Brand;
+                document.getElementById('editPrice').value = data.Price;
+                document.getElementById('editImgPreview').src = data.Image_URL || '';
+                document.getElementById('editCurrentImg').value = data.Image_URL || '';
+                var editModal = new bootstrap.Modal(document.getElementById('editModal'));
+                editModal.show();
+            }
 
             // Preview image on file select
             document.getElementById('editImageInput').addEventListener('change', function(e) {
@@ -542,9 +585,33 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
             document.querySelectorAll('.delete-btn').forEach(function(btn) {
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
+                    productIdToDelete = this.dataset.id;
                     var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
                     deleteModal.show();
                 });
+            });
+
+             document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+                if (productIdToDelete) {
+                    fetch('delete_product.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'Product_ID=' + productIdToDelete
+                    })
+                    .then(res => res.json())
+                    .then(resp => {
+                        if(resp.success) {
+                            alert('Product deleted!');
+                            location.reload(); // Or update the row dynamically
+                        } else {
+                            alert('Delete failed: ' + resp.error);
+                        }
+                    });
+                }
+                var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+                deleteModal.hide();
             });
 
             // Select All Checkbox for IEM
@@ -569,7 +636,6 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
             function updateBulkButtons() {
                 const checked = document.querySelectorAll('.row-checkbox:checked').length;
                 document.getElementById('bulkDeleteBtn').disabled = checked === 0;
-                document.getElementById('bulkEditBtn').disabled = checked === 0;
             }
 
             // Column toggle logic
@@ -586,8 +652,26 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
             document.getElementById('bulkDeleteBtn').addEventListener('click', function() {
                 const selected = Array.from(document.querySelectorAll('.row-checkbox:checked')).map(cb => cb.value);
                 if(selected.length && confirm('Delete selected products?')) {
-                    // TODO: Send AJAX request to delete selected products
-                    alert('Deleted IDs: ' + selected.join(', '));
+                    fetch('delete_product.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: selected.map(id => `product_id=${id}`).join('&') 
+                    })
+                    .then(res => res.json())
+                    .then(resp => {
+                        if(resp.success) {
+                            alert('Selected products deleted!');
+                            location.reload(); // Or update the row dynamically
+                        } else {
+                            alert('Delete failed: ' + resp.error);
+                        }
+                    })
+                     .catch(error => {
+                            console.error('Error deleting products:', error);
+                            alert('Failed to delete products. Please check the console.');
+                    });
                 }
             });
 
@@ -608,7 +692,208 @@ $outOfStock = $conn->query("SELECT COUNT(*) as cnt FROM product_tbl WHERE Stock_
                     alert('Deleted activity ID: ' + id);
                 });
             });
+        }); 
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const stockFilter = document.getElementById('stockFilter');
+            const sortFilter = document.getElementById('sortFilter');
+            const searchInput = document.getElementById('searchInput');
+            const filterBtn = document.getElementById('filterBtn');
+            const tab = 'iem'; // default or get from active tab
+
+            function loadProducts(page = 1) {
+                const stock = stockFilter.value;
+                const sort = sortFilter.value;
+                const search = searchInput.value;
+
+                fetch('handler.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        action: 'fetch',
+                        tab: tab,
+                        page: page,
+                        stock: stock,
+                        sort: sort,
+                        search: search
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.querySelector(`#${tab} tbody`);
+                    tbody.innerHTML = '';
+
+                    if (data.data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="11" class="text-center">No products found.</td></tr>';
+                        return;
+                    }
+
+                    data.data.forEach(row => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td><input type="checkbox" class="row-checkbox" value="${row.Product_ID}"></td>
+                                <td class="col-Product_ID">${row.Product_ID}</td>
+                                <td class="col-ProductName">${row.ProductName}</td>
+                                <td class="col-Description">${row.Description}</td>
+                                <td class="col-Category_ID">${row.CategoryName}</td>
+                                <td class="col-Brand">${row.Brand}</td>
+                                <td class="col-Price">₱${parseFloat(row.Price).toFixed(2)}</td>
+                                <td class="col-Stock_QTY">${row.Stock_QTY}</td>
+                                <td class="col-Image_URL">
+                                ${row.Image_URL ? `<img src="${row.Image_URL}" style="width:40px;height:40px;" class="img-thumbnail">` : ''}
+                                </td>
+                                <td class="col-Added_AT">${row.Added_AT}</td>
+                                <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-link text-dark p-0" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical fs-5"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item edit-btn" href="#" data-id="${row.Product_ID}">Edit</a></li>
+                                    <li><a class="dropdown-item delete-btn text-danger" href="#" data-id="${row.Product_ID}">Delete</a></li>
+                                    </ul>
+                                </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                });
+            }
+
+            filterBtn.addEventListener('click', () => loadProducts());
         });
+
+$(document).ready(function() {
+    let currentTab = 'iem';
+    let currentPage = 1;
+    let currentSearch = '';
+    let currentStock = 'all';
+    let currentSort = 'name';
+
+    // Load products
+    function loadProducts() {
+        $.post('ajax_handler.php', {
+            action: 'fetch',
+            tab: currentTab,
+            page: currentPage,
+            search: currentSearch,
+            stock: currentStock,
+            sort: currentSort
+        }, function(res) {
+            if (res.status === 'success') {
+                renderTable(res.data);
+                renderPagination(res.totalPages);
+            }
+        }, 'json');
+    }
+
+    // Render product table
+    function renderTable(data) {
+        let tbody = '';
+        if (data.length === 0) {
+            tbody = '<tr><td colspan="11">No products found.</td></tr>';
+        } else {
+            data.forEach(row => {
+                tbody += `
+                <tr data-id="${row.Product_ID}">
+                    <td><input type="checkbox" class="row-checkbox" value="${row.Product_ID}"></td>
+                    <td>${row.Product_ID}</td>
+                    <td><input type="text" class="form-control form-control-sm edit-name" value="${row.ProductName}"></td>
+                    <td><input type="text" class="form-control form-control-sm edit-desc" value="${row.Description}"></td>
+                    <td>${row.CategoryName}</td>
+                    <td><input type="text" class="form-control form-control-sm edit-brand" value="${row.Brand}"></td>
+                    <td><input type="number" class="form-control form-control-sm edit-price" value="${row.Price}"></td>
+                    <td><input type="number" class="form-control form-control-sm edit-stock" value="${row.Stock_QTY}"></td>
+                    <td><img src="${row.Image_URL}" width="40" height="40" class="img-thumbnail"></td>
+                    <td>${row.Added_AT}</td>
+                    <td><button class="btn btn-sm btn-danger delete-single" data-id="${row.Product_ID}">Delete</button></td>
+                </tr>`;
+            });
+        }
+        $('#product-table tbody').html(tbody);
+    }
+
+    // Render pagination
+    function renderPagination(totalPages) {
+        let html = '';
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link page-btn" href="#">${i}</a>
+                    </li>`;
+        }
+        $('#pagination').html(html);
+    }
+
+    // Events
+    $('#tabSelect').on('change', function() {
+        currentTab = $(this).val();
+        currentPage = 1;
+        loadProducts();
+    });
+
+    $('#searchInput').on('input', function() {
+        currentSearch = $(this).val();
+        currentPage = 1;
+        loadProducts();
+    });
+
+    $('#stockFilter').on('change', function() {
+        currentStock = $(this).val();
+        currentPage = 1;
+        loadProducts();
+    });
+
+    $('#sortSelect').on('change', function() {
+        currentSort = $(this).val();
+        currentPage = 1;
+        loadProducts();
+    });
+
+    $('#pagination').on('click', '.page-btn', function(e) {
+        e.preventDefault();
+        currentPage = parseInt($(this).text());
+        loadProducts();
+    });
+
+    // Bulk delete
+    $('#bulkDeleteBtn').click(function() {
+        const ids = $('.row-checkbox:checked').map(function() {
+            return $(this).val();
+        }).get();
+        if (ids.length === 0) return alert('Select at least one product.');
+        if (!confirm('Are you sure you want to delete selected products?')) return;
+        $.post('ajax_handler.php', { action: 'delete', ids }, function(res) {
+            alert(res.message);
+            loadProducts();
+        }, 'json');
+    });
+
+    // Bulk edit
+    $('#bulkEditBtn').click(function() {
+        const products = [];
+        $('#product-table tbody tr').each(function() {
+            if ($(this).find('.row-checkbox').is(':checked')) {
+                products.push({
+                    Product_ID: $(this).data('id'),
+                    ProductName: $(this).find('.edit-name').val(),
+                    Description: $(this).find('.edit-desc').val(),
+                    Brand: $(this).find('.edit-brand').val(),
+                    Price: $(this).find('.edit-price').val(),
+                    Stock_QTY: $(this).find('.edit-stock').val()
+                });
+            }
+        });
+        if (products.length === 0) return alert('Select products to edit.');
+        $.post('ajax_handler.php', { action: 'edit', products }, function(res) {
+            alert(res.message);
+            loadProducts();
+        }, 'json');
+    });
+
+    // Load initially
+    loadProducts();
+});
+
     </script>
 
 </body>

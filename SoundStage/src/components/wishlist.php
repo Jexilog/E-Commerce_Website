@@ -26,18 +26,18 @@ $wishlist = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Wishlist | AudioHub</title>
+    <title>My Wishlist | SoundStage</title>
     <link rel="icon" href="../assets/icons/website-icon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #181c24 0%, #2a3a4f 100%);
+            background: #ffffff;
             font-family: 'Segoe UI', sans-serif;
-            color: #f4f7fa;
+            color: #000000;
         }
         .wishlist-card {
-            background: #232b3e;
+            background: #003366;
             border-radius: 1.5rem;
             box-shadow: 0 4px 24px rgba(30, 41, 59, 0.15);
             padding: 2.5rem 2rem;
@@ -173,7 +173,7 @@ $wishlist = $stmt->fetchAll();
                                 case 2: $imageFolder = 'accessories'; break;
                                 default: $imageFolder = 'iems';
                             }
-                            $imagePath = "/AudioHub/src/assets/{$imageFolder}/" . ltrim($item['Image_URL'], '/');
+                            $imagePath = "/System/SoundStage/src/assets/{$imageFolder}/" . ltrim($item['Image_URL'], '/');
                         ?>
                         <tr class="wishlist-row">
                             <td class="d-flex align-items-center gap-3">

@@ -1,6 +1,148 @@
 <?php
 session_start();
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require'../../Composer/vendor/phpmailer/phpmailer/src/Exception.php';
+require '../../Composer/vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require '../../Composer/vendor/phpmailer/phpmailer/src/SMTP.php';
+require '../../Composer/vendor/autoload.php';
+
 require_once __DIR__ . '../../db.php';
+
+// Ensure user is logged in
+if (!isset($_SESSION['user_id'])) {
+    die("Unauthorized access.");
+}
+
+// Gather form data
+$name = $_POST['name'] ?? '';
+$phoneno = $_POST['mobile'] ?? '';
+$email = $_POST['email'] ?? '';
+$city = $_POST['city'] ?? '';
+$state = $_POST['state'] ?? '';
+$zip = $_POST['zip'] ?? '';
+$address = $_POST['address'] ?? '';
+$pay = $_POST['payment'] ?? 'Not Specified';
+$receipt_number = 'RCPT-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+$status = 'pending';
+$subtotal = 0;
+$cartProducts = [];
+
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+// Get cart ID
+$cartRes = $pdo->prepare("SELECT Cart_ID FROM cart_tbl WHERE User_ID = ? ORDER BY Cart_ID DESC LIMIT 1");
+$cartRes->execute([$_SESSION['user_id']]);
+$cart = $cartRes->fetch(PDO::FETCH_ASSOC);
+
+if ($cart) {
+    $cartId = $cart['Cart_ID'];
+
+    // Fetch cart items
+    $itemsStmt = $pdo->prepare("
+        SELECT ci.*, p.ProductName, p.Image_URL
+        FROM cart_items_tbl ci
+        JOIN product_tbl p ON p.Product_ID = ci.Product_ID
+        WHERE ci.Cart_ID = ?
+    ");
+    $itemsStmt->execute([$cartId]);
+    $items = $itemsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($items as $item) {
+    $unitPrice = floatval(str_replace(',', '', $item['Unit_price']));
+    $itemTotal = $item['Qty'] * $unitPrice;
+
+    $cartProducts[] = [
+        'cartitem' => $item['CartItem_ID'],
+        'productId' => $item['Product_ID'],
+        'id' => $item['Cart_ID'],
+        'name' => $item['ProductName'],
+        'image' => $item['Image_URL'], 
+        'qty' => $item['Qty'],
+        'unitPrice' => number_format($unitPrice, 2),
+        'itemTotal' => number_format($itemTotal, 2)
+    ];
+
+    $subtotal += $itemTotal;
+}
+
+}
+
+$discount = 0;
+$total = $subtotal - $discount;
+
+if (isset($_POST['confirmed'])) {
+    // Save checkout
+    $checkoutStmt = $pdo->prepare("INSERT INTO checkout_tbl (User_ID, Cart_ID, Total_Amount, PaymentMet, TransactionStat, CheckoutTstamp)
+        VALUES (?, ?, ?, ?, ?, NOW())");
+    
+    if ($checkoutStmt->execute([$_SESSION['user_id'], $cartId, $total, $pay, $status])) {
+        // Format cart products as HTML
+        $itemList = "";
+        foreach ($cartProducts as $prod) {
+            $itemList .= "<li>{$prod['name']} — Qty: {$prod['qty']}, Unit: ₱{$prod['unitPrice']}, Total: ₱{$prod['itemTotal']}</li>";
+        }
+
+        // Send confirmation email
+        try {
+            $mail = new PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'customerservicesoundstage@gmail.com';
+            $mail->Password = 'uotdoblzaisbokky';
+            $mail->SMTPSecure = 'ssl';
+            $mail->Port = 465;
+
+            $mail->setFrom('customerservicesoundstage@gmail.com', 'SoundStage');
+            $mail->addAddress($email, $name);
+            $mail->isHTML(true);
+            $mail->Subject = 'Payment Confirmed!';
+            $mail->Body = "
+                <h2>SoundStage - Order Confirmation</h2>
+                <p>Thank you, <strong>$name</strong>! Your order has been confirmed.</p>
+                <p><strong>Receipt No:</strong> $receipt_number</p>
+                <h3>Order Details</h3>
+                <ul>$itemList</ul>
+                <p><strong>Total Paid:</strong> ₱" . number_format($total, 2) . "</p>
+                <h4>Delivery Info</h4>
+                <p>
+                    <strong>Phone:</strong> $phoneno<br>
+                    <strong>Email:</strong> $email<br>
+                    <strong>Address:</strong> $address, $city, $state, $zip
+                </p>
+            ";
+
+            if($mail->send()){
+                echo "<script>
+                ('Payment Confirmed!');
+                document.location.href = '../pages/cart.php'
+                </script>
+                ";
+                $clear_items = $pdo->prepare("DELETE FROM cart_items_tbl WHERE Cart_ID = ?");
+                $clear_items->execute([$cartId]);
+
+                // Create a new cart for the user
+                $new_cart = $pdo->prepare("INSERT INTO cart_tbl (User_ID) VALUES (?)");
+                $new_cart->execute([$_SESSION['user_id']]);
+
+            } else {
+                echo "Mailer Error: " . $mail->ErrorInfo;
+            }
+            exit;
+
+        } catch (Exception $e) {
+            echo "
+                <script>
+                    alert('Mailer Error: {$mail->ErrorInfo}');
+                    window.location.href = '../cart.php';
+                </script>
+            ";
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -8,19 +150,19 @@ require_once __DIR__ . '../../db.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Checkout | HzOne</title>
-    <link rel="icon" href="/AudioHub/src/assets/icons/website-icon.png" type="image/x-icon">
+    <title>Checkout | SoundStage</title>
+    <link rel="icon" href="/System/SoundStage/src/assets/icons/website-icon.png" type="image/x-icon">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         body {
-            background: linear-gradient(135deg, #181c24 0%, #2a3a4f 100%);
+            background: #ffffff;
             min-height: 100vh;
             font-family: 'Segoe UI', Arial, sans-serif;
-            color: #eaf6ff;
+            color: #000000;
         }
         .brand-header {
-            background: #232b3e;
+            background: #003366;
             border-bottom: 1px solid #2e3a4d;
             padding: 1rem 2rem;
             display: flex;
@@ -42,7 +184,7 @@ require_once __DIR__ . '../../db.php';
             gap: 2.5rem;
         }
         .checkout-left, .checkout-right {
-            background: #232b3e;
+            background: #003366;
             border-radius: 14px;
             padding: 2.2rem 2rem;
             box-shadow: 0 2px 16px rgba(126,203,255,0.07);
@@ -63,7 +205,7 @@ require_once __DIR__ . '../../db.php';
             gap: 1.5rem;
         }
         .section-card {
-            background: #1a2233;
+            background: #ffffff;
             border-radius: 10px;
             padding: 1.5rem 1.2rem 1.2rem 1.2rem;
             margin-bottom: 0.5rem;
@@ -71,7 +213,7 @@ require_once __DIR__ . '../../db.php';
         .section-title {
             font-size: 1.08rem;
             font-weight: 600;
-            color: #7ecbff;
+            color: #003366;
             margin-bottom: 1.1rem;
         }
         .form-row {
@@ -94,7 +236,7 @@ require_once __DIR__ . '../../db.php';
             color: #eaf6ff;
         }
         label {
-            color: #eaf6ff;
+            color: #000000;
             font-weight: 500;
         }
         .toggle-switch {
@@ -113,6 +255,7 @@ require_once __DIR__ . '../../db.php';
         }
         .payment-methods {
             display: flex;
+            height: 60px;
             gap: 1.5rem;
             margin-top: 0.5rem;
         }
@@ -123,7 +266,7 @@ require_once __DIR__ . '../../db.php';
             font-size: 1rem;
             font-weight: 500;
             color: #eaf6ff;
-            background: #232b3e;
+            background: #003366;
             border-radius: 6px;
             padding: 0.6rem 1.1rem;
             cursor: pointer;
@@ -131,12 +274,13 @@ require_once __DIR__ . '../../db.php';
             transition: border 0.2s, background 0.2s;
         }
         .payment-radio:checked + .payment-radio-label {
-            border: 2px solid #7ecbff;
-            background: #1a2233;
+            border: 2px solid rgb(44, 140, 204);
+            background: #003366;
         }
         .payment-radio {
             display: none;
         }
+
         /* Order Summary */
         .order-summary-title {
             font-size: 1.15rem;
@@ -159,7 +303,7 @@ require_once __DIR__ . '../../db.php';
         .order-list li:last-child {
             border-bottom: none;
         }
-        .order-img {
+        .order-list img {
             width: 54px;
             height: 54px;
             object-fit: cover;
@@ -180,6 +324,7 @@ require_once __DIR__ . '../../db.php';
             color: #7ecbff;
         }
         .order-qty-controls {
+            color: white;
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -327,11 +472,11 @@ require_once __DIR__ . '../../db.php';
                             </label>
                             <input type="radio" class="payment-radio" id="pay-gcash" name="payment" value="gcash">
                             <label for="pay-gcash" class="payment-radio-label">
-                                <img src="src/assets/icons/gcash.jfif" alt="GCash" style="height:22px;vertical-align:middle;"> GCash
+                                <img src="../assets/icons/gcash.jfif" alt="GCash" style="height:22px; vertical-align:middle;"> GCash
                             </label>
                         </div>
                     </div>
-                    <button type="submit" class="confirm-btn">Confirm Order</button>
+                    <button type="submit" class="confirm-btn" name="confirmed">Confirm Order</button>
                 </form>
             </div>
         </div>
@@ -342,17 +487,22 @@ require_once __DIR__ . '../../db.php';
             <ul class="order-list">
                 <?php if (!empty($cartProducts)): foreach ($cartProducts as $item): ?>
                 <li>
-                    <img src="<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name']) ?>" class="order-img">
+                    <?php $imagePath = '/System/SoundStage/src/assets/uploads/';
+                    $image = !empty($item['image']) ? $imagePath . $item['image'] : $imagePath . '684a7e8b8fbb6_kadenz.avif';
+                    ?>
+                    <img src="<?= htmlspecialchars($image) ?>" class="product-image" alt="Product">
                     <div class="order-info">
                         <div class="order-title"><?= htmlspecialchars($item['name']) ?></div>
                     </div>
                     <div class="order-qty-controls">
                         <span><?= $item['qty'] ?></span>
-                        <a href="checkout.php?remove_id=<?= $item['id'] ?>" class="btn btn-outline-danger btn-sm ms-2" title="Remove item">
-                            <i class="bi bi-x"></i>
+                        <a href="remove-item.php?id=<?= urlencode($item['qty']) ?>"
+                        style="font-size:1.7rem; color: #ff6b81; text-decoration: none;"
+                            onclick="return confirm('Remove this item?');">
+                            <i class= "bi bi-x"></i>
                         </a>
                     </div>
-                    <div class="order-price">₱<?= number_format($item['itemTotal'], 2) ?></div>
+                    <div class="order-price">₱<?= $item['itemTotal'] ?></div>
                 </li>
                 <?php endforeach; else: ?>
                 <li><div class="text-primary">Your cart is empty.</div></li>
@@ -361,23 +511,22 @@ require_once __DIR__ . '../../db.php';
             <table class="summary-table">
                 <tr>
                     <td class="label">Subtotal</td>
-                    <td class="text-right">₱</td>
+                    <td class="text-right">₱<?= number_format($subtotal, 2) ?></td>
                 </tr>
                 <tr>
                     <td class="label">Shipping</td>
-                    <td class="text-right">₱0.00</td>
+                    <td class="text-right">₱<?= number_format($discount, 2) ?></td>
                 </tr>
                 <tr class="total-row">
                     <td>Total (PHP)</td>
-                    <td class="text-right">₱</td>
+                    <td class="text-right">₱<?= number_format($total, 2) ?></td>
                 </tr>
             </table>
 
             <!-- Order Summary Controls -->
             <div class="d-flex justify-content-between mb-2">
-                <a href="checkout.php?clear_cart=1" class="btn btn-danger btn-sm">
-                    <i class="bi bi-trash"></i> Clear Cart
-                </a>
+                <a href="cart.php?action=clear" class="btn btn-danger" onclick="return confirm('Are you sure you want to clear the cart?')">
+                    <i class="bi bi-trash"></i> Clear Cart</a>
             </div>
         </div>
     </div>

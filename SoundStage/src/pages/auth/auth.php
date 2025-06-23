@@ -16,10 +16,23 @@ function loginUser($pdo, $email, $password) {
         }
         $_SESSION['user_id'] = $user['User_ID'];
         $_SESSION['user_name'] = $user['FirstName'] . ' ' . $user['LastName'];
+
+        $historyId = logLogin($pdo, $user['User_ID']);
+        $_SESSION['history_ID'] = $historyId;
+
         return "success"; // <-- ito ang flag
     } else {
         return "Invalid email or password.";
     }
+}
+
+function logLogin($pdo, $userId) {
+    date_default_timezone_set('Asia/Manila');
+    $loginTime = date('Y-m-d H:i:s'); // Get current timestamp
+    $stmt = $pdo->prepare("INSERT INTO user_history (User_ID, Last_Login) VALUES (?, ?)");
+    $stmt->execute([$userId, $loginTime]);
+
+    return $pdo->lastInsertId();
 }
 
 $error = null; // Add this to avoid undefined variable
@@ -51,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $hash = password_hash($pass, PASSWORD_DEFAULT);
                 // Insert user
                 $verification_code = bin2hex(random_bytes(16));
-                $stmt = $pdo->prepare("INSERT INTO user_accounts (FirstName, LastName, Email_Add, Password, Status, Verification_Code, OTP) VALUES (?, ?, ?, ?, 'inactive', ?,?)");
+                $stmt = $pdo->prepare("INSERT INTO user_accounts (FirstName, LastName, Email_Add, Password, Status, Verification_Code, OTP) VALUES (?, ?, ?, ?, 'Pending', ?,?)");
                 $stmt->execute([$first, $last, $email, $hash, $verification_code, $otp]);
             
                 // Send verification email using PHPMailer
@@ -77,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $mail->send();
                     echo"<script>
                     alert('Verification email sent to your email address. Please check your email to verify your account.')
-                    document.location.href = 'otpverify.php';
+                    document.location.href = 'otpverify.php?verification_code=$verification_code';
                     </script>
                     ";
 
@@ -108,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password = $_POST['password'];
         $error = loginUser($pdo, $email, $password);
         if ($error === "success") {
-            echo "<script>window.location.href = '/SoundStage/src/dashboard.php';</script>";
+            echo "<script>window.location.href = '/System/SoundStage/src/dashboard.php';</script>";
             exit;
         }
     }
@@ -123,9 +136,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login/Register | HzOne</title>
+    <title>Login/Register | SoundStage</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="/AudioHub/src/assets/icons/website-icon.png" type="image/x-icon">
+    <link rel="icon" href="/System/SoundStage/src/assets/icons/website-icon.png" type="image/x-icon">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -383,7 +396,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $update->execute([$reset_token, $expiry, $email]);
 
             $fullname = $user['FirstName'] . ' ' . $user['LastName'];
-            $reset_link = "http://localhost/AudioHub/src/pages/auth/resetpass.php?token=$reset_token";
+            $reset_link = "http://localhost/System/SoundStage/src/pages/auth/resetpass.php?token=$reset_token";
 
             $mail = new PHPMailer(true); 
             try {
@@ -447,19 +460,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div class="modal-body" style="color: #eaf6ff; font-size: 1.08rem; line-height: 1.7;">
             <div class="mb-3">
               <h6 style="color: #4fa3e3; font-weight: 600;">1. Acceptance of Terms</h6>
-              <p>By registering or using AudioHub, you agree to abide by these Terms &amp; Conditions. Please read them carefully before proceeding.</p>
+              <p>By registering or using SoundStage, you agree to abide by these Terms &amp; Conditions. Please read them carefully before proceeding.</p>
             </div>
             <div class="mb-3">
               <h6 style="color: #4fa3e3; font-weight: 600;">2. User Responsibilities</h6>
               <ul style="padding-left: 1.2rem;">
                 <li>Provide accurate and up-to-date information during registration.</li>
                 <li>Keep your account credentials confidential.</li>
-                <li>Do not use AudioHub for unlawful or prohibited activities.</li>
+                <li>Do not use SoundStage for unlawful or prohibited activities.</li>
               </ul>
             </div>
             <div class="mb-3">
               <h6 style="color: #4fa3e3; font-weight: 600;">3. Intellectual Property</h6>
-              <p>All content and trademarks on AudioHub are the property of their respective owners. Unauthorized use is strictly prohibited.</p>
+              <p>All content and trademarks on SoundStage are the property of their respective owners. Unauthorized use is strictly prohibited.</p>
             </div>
             <div class="mb-3">
               <h6 style="color: #4fa3e3; font-weight: 600;">4. Changes to Terms</h6>
@@ -492,7 +505,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="mb-3">
               <h6 style="color: #4fa3e3; font-weight: 600;">2. Use of Information</h6>
               <ul style="padding-left: 1.2rem;">
-                <li>To personalize your experience on AudioHub.</li>
+                <li>To personalize your experience on SoundStage.</li>
                 <li>To communicate important updates or notifications.</li>
                 <li>To enhance security and prevent fraud.</li>
               </ul>

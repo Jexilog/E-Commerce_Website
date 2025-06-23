@@ -51,7 +51,7 @@
                 </li>
             </ul>
         </div>
-        <a href="../components/dashboard.php" class="btn btn-outline-primary mt-4"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+        <a href="../admin/dashboard.php" class="btn btn-outline-primary mt-4"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
     </div>
 </body>
 </html>

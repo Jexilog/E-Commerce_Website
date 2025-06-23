@@ -1,10 +1,11 @@
+<?php session_start()?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Sign In | Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/AudioHub/src/assets/icons/website-icon.png" type="image/x-icon">
+    <link rel="icon" href="/System/SoundStage/src/assets/icons/website-icon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <style>
@@ -117,12 +118,12 @@
             <div class="text-center mb-4">
                 <h2 class="fw-bold mb-1" style="color: #7ecbff;">Hello Admin!<br><span style="letter-spacing:6px;">WELCOME</span></h2>
                 <div class="position-relative d-inline-block" style="width: 150px;">
-                    <img src="../../assets/images/carlos.png" alt="AudioHub Admin" class="img-fluid mt-1 mb-1" style="max-width: 150px; border-radius: 50%;">
+                    <img src="../../assets/images/carlos.png" alt="SoundStage Admin" class="img-fluid mt-1 mb-1" style="max-width: 150px; border-radius: 50%;">
                     <span class="position-absolute start-50 translate-middle-x" style="bottom: -10px; z-index: 2; background: white; padding: 2px 12px; border-radius: 12px; font-weight: bold; color: #003366; font-size: 1.1rem; letter-spacing: 0.2em; border: 1px solid #003366;">
                         ADMIN
                     </span>
                 </div>
-                <div class="text-muted mt-3" style="font-size:1rem;">"AudioHub: Where Every Beat Finds Its Home!"</div>
+                <div class="text-muted mt-3" style="font-size:1rem;">"SoundStage: Where Every Beat Finds Its Home!"</div>
             </div>
             <form id="signinForm" autocomplete="off">
                 <div class="mb-3 position-relative">
@@ -180,7 +181,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../../assets/scripts/sign-in.js"></script>
+    <script src="../../assets//scripts//sign-in.js"></script>
 
 </body>
 </html>

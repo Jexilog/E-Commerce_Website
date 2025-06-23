@@ -1,12 +1,12 @@
 <?php
-    session_start();
+session_start();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>HzOne</title>
+    <title>SoundStage</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="../src/assets/icons/website-icon.png" type="image/x-icon">
     <!-- Bootstrap CSS & Icons -->
@@ -14,8 +14,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #181c24 0%, #2a3a4f 100%);
-            color: #eaf6ff;
+            background: #ffffff;
+            color: #000000;
             min-height: 100vh;
             font-family: 'Segoe UI', sans-serif;
         }
@@ -50,11 +50,39 @@
             color: #fff;
         }
         .hero-section {
-            background: linear-gradient(120deg, #232b3e 60%, #1a2233 100%);
-            padding: 2rem 0 2rem 0;
-            text-align: center;
+            background: #ffffff;
+            padding: 0;
+            min-height: 520px;
+        }
+        .carousel-inner {
+            min-height: 450px;
+        }
+        .carousel-item {
+            min-height: 450px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 2rem;
+            display: flex;
+            align-items: center;
+        }
+        .carousel-overlay {
+            background: rgba(0, 34, 66, 0.60);
+            border-radius: 2rem;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .carousel-control-prev,
+        .carousel-control-next {
+            z-index: 2 !important;
+        }
+        .carousel-content {
             position: relative;
-            overflow: hidden;
+            z-index: 2;
+            width: 100%;
         }
         .hero-title {
             font-size: 2.7rem;
@@ -68,7 +96,6 @@
         .hero-desc {
             color: #b3c7e6;
             font-size: 1.2rem;
-            margin-bottom: 2rem;
         }
         .hero-img {
             max-width: 420px;
@@ -83,11 +110,11 @@
             justify-content: center;
             align-items: center; /* Center vertically */
             width: 100%;
-            background: #20283a;
+            background: #ffffff;
             padding: 1.5rem 0;
             border-radius: 1rem;
             margin: 2rem auto;
-            box-shadow: 0 2px 16px rgba(126,203,255,0.08);
+            box-shadow: 0 2px 16px rgba(35, 37, 37, 0.08);
             color: #eaf6ff; /* Ensure text is readable */
         }
         .partners-bar img {
@@ -103,17 +130,17 @@
             filter: grayscale(0) brightness(1.3) drop-shadow(0 4px 16px #7ecbff55);
         }
         .section-title {
-            color: #eaf6ff;
+            color: #000000;
             font-size: 1.5rem;
             font-weight: bold;
             margin-bottom: 1.5rem;
             letter-spacing: 1px;
         }
         .feature-card {
-            background: rgba(34, 44, 66, 0.85);
+            background: #003366;
             border-radius: 1.2rem;
             padding: 1rem 1.5rem;
-            color: #eaf6ff;
+            color: #ffffff;
             box-shadow: 0 4px 24px rgba(126,203,255,0.07);
             margin-bottom: 1rem;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -153,9 +180,10 @@
             margin-right: 1rem;
             font-size: 1.5rem;
         }
+
         /* Featured IEMs Modern Card Style */
         .iem-card {
-            background: linear-gradient(135deg, #232b3e 60%, #1a2233 100%);
+            background: #003366;
             border-radius: 2rem;
             padding: 2.2rem 1.5rem 1.5rem 1.5rem;
             position: relative;
@@ -247,85 +275,86 @@
     <?php include 'components/header/header.php'; ?>
 
     <!-- Hero Section -->
-    <section class="hero-section d-flex align-items-center" style="min-height: 480px;">
+    <section class="hero-section d-flex align-items-center" style="min-height: 520px;">
         <div class="container">
-            <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner rounded-4 shadow-lg" style="background:rgba(34,44,66,0.92);">
+            <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner rounded-4 shadow-lg" style="background: #003366;">
                     <!-- Slide 1 -->
-                    <div class="carousel-item active">
-                        <div class="row align-items-center py-5 px-5">
-                            <div class="col-md-6 text-md-start text-center">
-                                <h1 class="hero-title mb-3">
-                                    <span class="hero-highlight">Unleash</span> Studio Sound<br>
-                                    In Your Pocket
-                                </h1>
-                                <p class="hero-desc mb-4">
-                                    Experience the clarity and detail of premium IEMs.<br>
-                                    Perfect for audiophiles, musicians, and everyday listeners.
-                                </p>
-                                <a href="#" class="btn btn-primary btn-lg px-4 me-2 mb-2">Shop Now</a>
-                                <a href="#" class="btn btn-outline-primary btn-lg px-4 mb-2">Explore Brands</a>
-                            </div>
-                            <div class="col-md-6 text-center">
-                                <img src="../src/assets/images/iem.JPG" alt="IEM Hero" class="img-fluid rounded-3 shadow" style="max-height:260px;">
+                    <div class="carousel-item active" style="background-image: url('../src/assets/images/iem.JPG');">
+                        <div class="carousel-overlay"></div>
+                        <div class="carousel-content">
+                            <div class="row align-items-center py-5 px-5">
+                                <div class="col-md-7 text-md-start text-center">
+                                    <h1 class="hero-title mb-3 mt-4">
+                                        <span class="hero-highlight">Unleash</span> Studio Sound<br>
+                                        In Your Pocket
+                                    </h1>
+                                    <p class="hero-desc mb-4">
+                                        Experience the clarity and detail of premium IEMs.<br>
+                                        Perfect for audiophiles, musicians, and everyday listeners.
+                                    </p>
+                                    <a href="#" class="btn btn-primary btn-lg px-4 me-2 mb-2">Shop Now</a>
+                                    <a href="#" class="btn btn-outline-primary btn-lg px-4 mb-2">Explore Brands</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <!-- Slide 2 -->
-                    <div class="carousel-item">
-                        <div class="row align-items-center py-5 px-5">
-                            <div class="col-md-6 text-md-start text-center">
-                                <h1 class="hero-title mb-3">
-                                    <span class="hero-highlight">Compare</span> Frequency<br>
-                                    Like a Pro
-                                </h1>
-                                <p class="hero-desc mb-4">
-                                    Visualize and compare IEM frequency responses.<br>
-                                    Find your perfect sound signature with HzOne.
-                                </p>
-                                <a href="#" class="btn btn-primary btn-lg px-4 me-2 mb-2">Try Visualizer</a>
-                                <a href="#" class="btn btn-outline-primary btn-lg px-4 mb-2">Learn More</a>
-                            </div>
-                            <div class="col-md-6 text-center">
-                                <img src="../src/assets/images/iem.JPG" alt="Visualizer" class="img-fluid rounded-3 shadow" style="max-height:260px;">
+                    <div class="carousel-item" style="background-image: url('../src/assets/images/carousel-slide2.webp');">
+                        <div class="carousel-overlay"></div>
+                        <div class="carousel-content">
+                            <div class="row align-items-center py-5 px-5">
+                                <div class="col-md-7 text-md-start text-center">
+                                    <h1 class="hero-title mb-3 mt-4">
+                                        <span class="hero-highlight">Compare</span> Frequency<br>
+                                        Like a Pro
+                                    </h1>
+                                    <p class="hero-desc mb-4">
+                                        Visualize and compare IEM frequency responses.<br>
+                                        Find your perfect sound signature with HzOne.
+                                    </p>
+                                    <a href="#" class="btn btn-primary btn-lg px-4 me-2 mb-2">Try Visualizer</a>
+                                    <a href="#" class="btn btn-outline-primary btn-lg px-4 mb-2">Learn More</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <!-- Slide 3 -->
-                    <div class="carousel-item">
-                        <div class="row align-items-center py-5 px-5">
-                            <div class="col-md-6 text-md-start text-center">
-                                <h1 class="hero-title mb-3">
-                                    <span class="hero-highlight">Mobile</span> Shopping<br>
-                                    For IEM Lovers
-                                </h1>
-                                <p class="hero-desc mb-4">
-                                    Browse, compare, and buy IEMs on any device.<br>
-                                    Your next upgrade is just a tap away.
-                                </p>
-                                <a href="#" class="btn btn-primary btn-lg px-4 me-2 mb-2">Get the App</a>
-                                <a href="#" class="btn btn-outline-primary btn-lg px-4 mb-2">Browse IEMs</a>
-                            </div>
-                            <div class="col-md-6 text-center">
-                                <img src="../src/assets/images/iem.JPG" alt="Mobile Shopping" class="img-fluid rounded-3 shadow" style="max-height:260px;">
+                    <div class="carousel-item" style="background-image: url('../src/assets/images/carousel-slide3.webp');">
+                        <div class="carousel-overlay"></div>
+                        <div class="carousel-content">
+                            <div class="row align-items-center py-5 px-5">
+                                <div class="col-md-7 text-md-start text-center">
+                                    <h1 class="hero-title mb-3 mt-4">
+                                        <span class="hero-highlight">Mobile</span> Shopping<br>
+                                        For IEM Lovers
+                                    </h1>
+                                    <p class="hero-desc mb-4">
+                                        Browse, compare, and buy IEMs on any device.<br>
+                                        Your next upgrade is just a tap away.
+                                    </p>
+                                    <a href="#" class="btn btn-primary btn-lg px-4 me-2 mb-2">Get the App</a>
+                                    <a href="#" class="btn btn-outline-primary btn-lg px-4 mb-2">Browse IEMs</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- Carousel Controls -->
-                <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
                 </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Next</span>
                 </button>
+
                 <!-- Carousel Indicators -->
                 <div class="carousel-indicators mb-0">
-                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
                 </div>
             </div>
         </div>
@@ -342,25 +371,26 @@
 
     <!-- What We Do Section (Replaced with "How It Works") -->
     <section class="container my-5">
-        <h2 class="section-title text-center mb-5"><i class="bi bi-lightning-charge"></i> How HzOne Works</h2>
+        <h2 class="section-title"><i class="bi bi-lightning-charge"></i> How SoundStage Works</h2>
+        <div class="divider mb-3"><hr></div>
         <div class="row g-4 justify-content-center">
             <div class="col-md-4">
                 <div class="feature-card text-center h-100">
-                    <div class="feature-icon mb-2"><i class="bi bi-search"></i></div>
+                    <div class="feature-icon mb-2 mt-2"><i class="bi bi-search"></i></div>
                     <h5>1. Discover</h5>
                     <p class="text-muted">Browse our curated collection of IEMs and accessories. Use advanced filters to find the perfect match for your sound preference and budget.</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="feature-card text-center h-100">
-                    <div class="feature-icon mb-2"><i class="bi bi-cart-check"></i></div>
+                    <div class="feature-icon mb-2 mt-2"><i class="bi bi-cart-check"></i></div>
                     <h5>2. Shop Securely</h5>
                     <p class="text-muted">Add your favorite IEMs to cart and enjoy a seamless, secure checkout experience. Multiple payment options and fast shipping available.</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="feature-card text-center h-100">
-                    <div class="feature-icon mb-2"><i class="bi bi-headphones"></i></div>
+                    <div class="feature-icon mb-2 mt-2"><i class="bi bi-headphones"></i></div>
                     <h5>3. Enjoy Your Music</h5>
                     <p class="text-muted">Receive your new gear at your doorstep and experience music like never before. Share your reviews and join our audiophile community!</p>
                 </div>
@@ -370,7 +400,8 @@
 
     <!-- Featured IEMs Section (Modern Card Style) -->
     <section class="container my-5">
-        <h2 class="section-title text-center mb-5"><i class="bi bi-stars"></i> Featured IEMs</h2>
+        <h2 class="section-title"><i class="bi bi-stars"></i> Featured IEMs</h2>
+        <div class="divider mb-5"><hr></div>
         <div class="row g-5 justify-content-center">
             <!-- Card 1 -->
             <div class="col-md-4">
@@ -419,7 +450,8 @@
 
     <!-- Replaced with "Why Shop With Us -->
     <section class="container my-5">
-        <h2 class="section-title text-center mb-5"><i class="bi bi-gem"></i> Why Shop With HzOne?</h2>
+        <h2 class="section-title"><i class="bi bi-gem"></i> Why Shop With SoundStage?</h2>
+        <div class="divider mb-3"><hr></div>
         <div class="row g-4 justify-content-center">
             <div class="col-md-3">
                 <div class="feature-card text-center h-100">
@@ -447,6 +479,58 @@
                     <div class="feature-icon mb-2 p-2"><i class="bi bi-arrow-repeat"></i></div>
                     <h6>Easy Returns</h6>
                     <p class="text-muted">Not satisfied? Enjoy hassle-free returns and exchanges within 7 days of delivery.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Blogs Section -->
+    <section class="container my-5">
+        <h2 class="section-title"><i class="bi bi-journal"></i> Blogs</h2>
+        <div class="divider mb-3"><hr></div>
+        <div class="row g-4 justify-content-center">
+            <!-- Blog Card 1 -->
+            <div class="col-md-3">
+                <div class="feature-card text-center h-100">
+                    <img src="../src/assets/images/blog-img/1st.jpg" alt="The Best In-Ear Monitors for Working Out" class="img-fluid rounded mb-3">
+                    <h6>The Best In-Ear Monitors for Working Out</h6>
+                    <p class="text-muted blog-desc">
+                        Secure, sweat-resistant IEMs with dynamic sound to boost your workouts.
+                    </p>
+                    <a href="../src/components/blogs/blog-page.php?id=1" class="text-info">Read More</a>
+                </div>
+            </div>
+            <!-- Blog Card 2 -->
+            <div class="col-md-3">
+                <div class="feature-card text-center h-100">
+                    <img src="../src/assets/images/blog-img/2nd.jpg" alt="Top 3 Budget In-Ear Monitor for you" class="img-fluid rounded mb-3">
+                    <h6>Top 3 Budget In-Ear Monitor for you</h6>
+                    <p class="text-muted blog-desc">
+                        Affordable IEMs with balanced audio, perfect for everyday listening.
+                    </p>
+                    <a href="../src/components/blogs/blog-page.php?id=2" class="text-info">Read More</a>
+                </div>
+            </div>
+            <!-- Blog Card 3 -->
+            <div class="col-md-3">
+                <div class="feature-card text-center h-100">
+                    <img src="../src/assets/images/blog-img/3rd.1.jpg" alt="Good for Gaming In-Ear Monitors" class="img-fluid rounded mb-3">
+                    <h6>Good for Gaming In-Ear Monitors</h6>
+                    <p class="text-muted blog-desc">
+                        Immersive IEMs with clear spatial sound for competitive gaming.
+                    </p>
+                    <a href="../src/components/blogs/blog-page.php?id=3" class="text-info">Read More</a>
+                </div>
+            </div>
+            <!-- Blog Card 4 -->
+            <div class="col-md-3">
+                <div class="feature-card text-center h-100">
+                    <img src="../src/assets/images/blog-img/4th.webp" alt="How to Clean you In-Ear Monitors" class="img-fluid rounded mb-3">
+                    <h6>How to Clean you In-Ear Monitors</h6>
+                    <p class="text-muted blog-desc">
+                        Simple steps to keep your IEMs hygienic and sounding great.
+                    </p>
+                    <a href="../src/components/blogs/blog-page.php?id=4" class="text-info">Read More</a>
                 </div>
             </div>
         </div>

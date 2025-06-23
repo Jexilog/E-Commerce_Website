@@ -1,15 +1,23 @@
 <?php
+// Enable error reporting for debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $conn = new mysqli("localhost", "root", "", "tangenamo-jeckho");
+    $conn = new mysqli("localhost", "root", "", "db_system");
     if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 
+    // Gather form data
     $ProductName = $_POST['ProductName'];
     $Description = $_POST['Description'];
-    $Category_ID = $_POST['Category_ID']; // now numeric
+    $Category_ID = $_POST['Category_ID'];
     $Brand = $_POST['Brand'];
     $Price = $_POST['Price'];
     $Stock_QTY = $_POST['Stock_QTY'];
-    $Added_AT = date('Y-m-d');
+    $Status = $_POST['status']; // ✅ Added
+    date_default_timezone_set('Asia/Manila');
+    $Added_AT = date('Y-m-d H:i:s');
 
     // Handle image upload
     $Image_URL = "";
@@ -18,30 +26,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!is_dir($targetDir)) {
             mkdir($targetDir, 0777, true);
         }
-        $fileName = uniqid() . "_" . basename($_FILES["Image_File"]["name"]);
+        $fileExt = pathinfo($_FILES["Image_File"]["name"], PATHINFO_EXTENSION);
+        $fileName = uniqid("img_", true) . "." . $fileExt;
         $targetFile = $targetDir . $fileName;
+
         if (move_uploaded_file($_FILES["Image_File"]["tmp_name"], $targetFile)) {
-            $Image_URL = $targetFile;
+            $Image_URL = $fileName; // ✅ Save filename only (not full path)
+        } else {
+            echo "<script>alert('Failed to upload image.');</script>";
+            exit;
         }
+    } else {
+        echo "<script>alert('Image is required.');</script>";
+        exit;
     }
 
-    $stmt = $conn->prepare("INSERT INTO product_tbl (ProductName, Description, Category_ID, Brand, Price, Stock_QTY, Image_URL, Added_AT) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssisdiss", $ProductName, $Description, $Category_ID, $Brand, $Price, $Stock_QTY, $Image_URL, $Added_AT);
-    $stmt->execute();
+    // Prepare and execute insert statement
+    $stmt = $conn->prepare("INSERT INTO product_tbl 
+        (ProductName, Description, Category_ID, Brand, Price, Stock_QTY, Image_URL, Added_AT, Status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+    $stmt->bind_param("ssisdisss", $ProductName, $Description, $Category_ID, $Brand, $Price, $Stock_QTY, $Image_URL, $Added_AT, $Status);
+
+    if ($stmt->execute()) {
+        // Success
+        header("Location: /System/SoundStage/src/components/admin/products.php");
+        exit;
+    } else {
+        // Error
+        echo "<script>alert('Insert failed: " . $stmt->error . "');</script>";
+    }
+
     $stmt->close();
     $conn->close();
-
-    header("Location: /Audiohub/src/components/admin/products.php");
-    exit;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Product | Audiohub</title>
+    <title>Add Product | SoundStage</title>
     <link rel="icon" href="../../assets/icons/website-icon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/styles/products.css">
@@ -129,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                             <div class="col-md-4 d-flex flex-column align-items-center justify-content-start">
                                 <label class="form-label fw-semibold mb-1">Image Preview</label>
-                                <img id="imgPreview" src="../assets/images/no-image.png" alt="Preview" class="img-preview mb-2">
+                                <img id="imgPreview" src="/System/SoundStage/src/assets/uploads/no-image.png" alt="Preview" class="img-preview mb-2">
                                 <input type="file" class="form-control" name="Image_File" accept="image/*" onchange="previewImage(event)" required>
                                 <small class="text-muted">Recommended: 1:1 ratio, max 2MB</small>
                             </div>

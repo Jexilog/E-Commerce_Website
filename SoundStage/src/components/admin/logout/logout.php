@@ -6,5 +6,5 @@ session_unset();
 session_destroy();
 
 // Redirect to login or homepage
-header("Location: /AudioHub/src/pages/auth/sign-in.php");
+header("Location: /System/SoundStage/src/pages/auth/sign-in.php");
 exit;

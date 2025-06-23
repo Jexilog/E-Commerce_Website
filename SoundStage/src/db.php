@@ -1,7 +1,7 @@
 <?php
 // filepath: c:\xampp\htdocs\AudioHub\src\db.php
 $host = 'localhost';
-$db   = 'testing';
+$db   = 'db_system';
 $user = 'root';
 $pass = '';
 $charset = 'utf8mb4';

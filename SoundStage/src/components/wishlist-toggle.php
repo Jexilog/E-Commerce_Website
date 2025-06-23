@@ -1,3 +1,4 @@
+89% of storage used … If you run out of space, you can't save to Drive or back up Google Photos. Get 30 GB of storage for ₱49.00 ₱10.00/month for 2 months.
 <?php
 session_start();
 require_once __DIR__ . '../../db.php';

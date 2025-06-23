@@ -6,9 +6,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Security & Privacy Policy | HzOne</title>
+    <title>Security & Privacy Policy | SoundStage</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="/AudioHub/src/assets/icons/website-icon.png" type="image/x-icon">
+    <link rel="icon" href="/System/SoundStage/src/assets/icons/website-icon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -144,7 +144,7 @@
             <div><i class="bi bi-shield-lock"></i></div>
             <div class="policy-hero-title">Security & Privacy Policy</div>
             <div class="policy-hero-desc">
-                At <span class="policy-highlight">HzOne</span>, your privacy and security are our top priorities.<br>
+                At <span class="policy-highlight">SoundStage</span>, your privacy and security are our top priorities.<br>
                 We are committed to protecting your personal information and ensuring a safe shopping experience.<br>
                 This policy explains how we collect, use, store, and protect your data, as well as your rights and choices.
             </div>
@@ -254,9 +254,9 @@
                 If you have any questions, concerns, or requests regarding your privacy or our security practices, please contact us:
             </p>
             <ul class="policy-list">
-                <li><i class="bi bi-envelope"></i>Email: <a href="mailto:support@hzone.ph">support@hzone.ph</a></li>
+                <li><i class="bi bi-envelope"></i>Email: <a href="mailto:support@soundstage.ph">support@soundstage.ph</a></li>
                 <li><i class="bi bi-telephone"></i>Phone: <a href="tel:+639123456789">+63 912 345 6789</a></li>
-                <li><i class="bi bi-geo-alt"></i>Address: 123 AudioHub St., Makati City, Philippines</li>
+                <li><i class="bi bi-geo-alt"></i>Address: 123 SoundStage Inc. St., Makati City, Philippines</li>
             </ul>
         </div>
     </div>

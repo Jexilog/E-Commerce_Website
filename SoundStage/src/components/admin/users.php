@@ -9,7 +9,7 @@ $maxRows = isset($_GET['maxRows']) ? intval($_GET['maxRows']) : 10;
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 
 // Connect to DB
-$conn = new mysqli("localhost", "root", "", "tangenamo-jeckho");
+$conn = new mysqli("localhost", "root", "", "db_system");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
       $verification_code = bin2hex(random_bytes(16));
   }
 
-  $conn = new mysqli("localhost", "root", "", "tangenamo-jeckho");
+  $conn = new mysqli("localhost", "root", "", "testing");
   if ($conn->connect_error) {
       die("Connection failed: " . $conn->connect_error);
   }
@@ -55,8 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
 
   // (Optional) Send verification email if status is inactive
   if ($verification_code) {
-      $verify_link = "http://localhost/AudioHub/src/pages/auth/verify.php?code=$verification_code";
-      $subject = "Verify your AudioHub account";
+      $verify_link = "http://localhost/System/SoundStage/src/pages/auth/verify.php?code=$verification_code";
+      $subject = "Verify your SoundStage account";
       $message = "Click this link to verify: $verify_link";
 
       $mail = new PHPMailer(true);
@@ -65,13 +65,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
           $mail->isSMTP();
           $mail->Host       = 'smtp.gmail.com';
           $mail->SMTPAuth   = true;
-          $mail->Username   = 'carlosemmanuelreyes18@gmail.com'; // Your Gmail address
-          $mail->Password   = 'tvhg vwzf bzle wxbh';    // Gmail App Password, hindi regular password!
+          $mail->Username   = 'customerservicesoundstage@gmail.com'; // Your Gmail address
+          $mail->Password   = 'uotdoblzaisbokky';    // Gmail App Password, hindi regular password!
           $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
           $mail->Port       = 587;
 
-          //Recipients
-          $mail->setFrom('carlosemmanuelreyes18@gmail.com', 'AudioHub');
+          //Recipients  
+          $mail->setFrom('customerservicesoundstage@gmail.com', 'SoundStage');
           $mail->addAddress($email, $firstName . ' ' . $lastName);
 
           //Content
@@ -311,6 +311,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
                                         <select class="form-select form-select-sm" id="userStatus" name="Status">
                                             <option value="Active" selected>Active</option>
                                             <option value="Inactive">Inactive</option>
+                                            <option value="Banned">Banned</option>
+                                            <option value="Unbanned">Unbanned</option>
+                                            <option value="Pending">Pending</option>
                                         </select>
                                     </div>
                                 </div>
@@ -354,6 +357,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
                                 <select class="form-select form-select-sm" id="editStatus" name="status">
                                     <option value="Active">Active</option>
                                     <option value="Inactive">Inactive</option>
+                                    <option value="Banned">Banned</option>
+                                    <option value="Pending">Pending</option>
                                 </select>
                             </div>
                         </div>
@@ -391,7 +396,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
         </div>
     </div>
 
-    <!-- Ban/Unban Modal -->
+       <!-- Ban/Unban Modal -->
     <div class="modal fade" id="banUnbanModal" tabindex="-1" aria-labelledby="banUnbanModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form id="banUnbanForm">
@@ -435,63 +440,248 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Search filter
-        document.getElementById('userSearchInput').addEventListener('input', function() {
-            const filter = this.value.toLowerCase();
+  document.addEventListener('DOMContentLoaded', function() {
+    // DOM Elements
+    const userSearchInput = document.getElementById('userSearchInput');
+    const userTableBody = document.getElementById('userTableBody');
+    const editUserForm = document.getElementById('editUserForm');
+    const editUserModal = document.getElementById('editUserModal');
+    const avatarInput = document.getElementById('userAvatar');
+
+    // Search functionality
+    if (userSearchInput) {
+        userSearchInput.addEventListener('input', debounce(function() {
+            const filter = this.value.toLowerCase().trim();
             const rows = document.querySelectorAll('#userTableBody tr');
+            
             rows.forEach(row => {
                 const text = row.textContent.toLowerCase();
                 row.style.display = text.includes(filter) ? '' : 'none';
             });
-        });
+        }, 300));
+    }
 
-        // Event delegation for modal triggers
-        document.getElementById('userTableBody').addEventListener('click', function(e) {
+    // Event delegation for user actions
+    if (userTableBody) {
+        userTableBody.addEventListener('click', function(e) {
             // Edit User
             if (e.target.closest('.edit-user-btn')) {
-                const btn = e.target.closest('.edit-user-btn');
-                document.getElementById('editFirstName').value = btn.dataset.fname;
-                document.getElementById('editLastName').value = btn.dataset.lname;
-                document.getElementById('editEmail').value = btn.dataset.email;
-                document.getElementById('editStatus').value = btn.dataset.status;
-                new bootstrap.Modal(document.getElementById('editUserModal')).show();
+                handleEditUser(e);
             }
             // Reset Password
-            if (e.target.closest('.reset-pass-btn')) {
-                const btn = e.target.closest('.reset-pass-btn');
-                document.getElementById('resetUserEmail').textContent = btn.dataset.email;
-                document.getElementById('resetPassword').value = '';
-                new bootstrap.Modal(document.getElementById('resetPasswordModal')).show();
+            else if (e.target.closest('.reset-pass-btn')) {
+                handleResetPassword(e);
             }
-            // Ban/Unban
-            if (e.target.closest('.ban-unban-btn')) {
-                const btn = e.target.closest('.ban-unban-btn');
-                const isBanned = btn.dataset.status.toLowerCase() !== 'active';
-                document.getElementById('banUnbanTitle').textContent = isBanned ? 'Unban User' : 'Ban User';
-                document.getElementById('banUnbanMessage').textContent = `Are you sure you want to ${isBanned ? 'unban' : 'ban'} ${btn.dataset.name}?`;
-                document.getElementById('banUnbanActionBtn').textContent = isBanned ? 'Unban' : 'Ban';
-                new bootstrap.Modal(document.getElementById('banUnbanModal')).show();
+            // Ban/Unban User
+            else if (e.target.closest('.ban-unban-btn')) {
+                handleBanUnban(e);
             }
             // Delete User
-            if (e.target.closest('.delete-user-btn')) {
-                const btn = e.target.closest('.delete-user-btn');
-                document.getElementById('deleteUserName').textContent = btn.dataset.name;
-                new bootstrap.Modal(document.getElementById('deleteAccountModal')).show();
+            else if (e.target.closest('.delete-user-btn')) {
+                handleDeleteUser(e);
             }
         });
+    }
 
-        // Avatar preview for Add User
-        const avatarInput = document.getElementById('userAvatar');
-        if (avatarInput) {
-            avatarInput.addEventListener('change', function(e) {
-                const [file] = this.files;
-                if (file) {
-                    document.getElementById('avatarPreview').src = URL.createObjectURL(file);
-                }
-            });
+    // Form submission for editing user
+    if (editUserForm) {
+        editUserForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitEditUserForm();
+        });
+    }
+
+    // Avatar preview
+    if (avatarInput) {
+        avatarInput.addEventListener('change', function(e) {
+            const [file] = this.files;
+            if (file && file.type.startsWith('image/')) {
+                document.getElementById('avatarPreview').src = URL.createObjectURL(file);
+            }
+        });
+    }
+
+    // Helper functions
+    function debounce(func, wait) {
+        let timeout;
+        return function() {
+            const context = this, args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(context, args), wait);
+        };
+    }
+
+    async function handleEditUser(e) {
+        try {
+            e.preventDefault();
+            const btn = e.target.closest('.edit-user-btn');
+            
+            // Populate modal fields
+            document.getElementById('editFirstName').value = btn.dataset.fname;
+            document.getElementById('editLastName').value = btn.dataset.lname;
+            document.getElementById('editEmail').value = btn.dataset.email;
+            document.getElementById('editStatus').value = btn.dataset.status;
+            
+            // Store user ID
+            editUserModal.dataset.userid = btn.dataset.userid;
+            
+            // Show modal
+            const modal = new bootstrap.Modal(editUserModal);
+            modal.show();
+        } catch (error) {
+            console.error('Edit user error:', error);
+            alert('An error occurred while preparing to edit user.');
         }
+    }
+
+    async function submitEditUserForm() {
+        const editUserForm = document.getElementById('editUserForm');
+        editUserForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(editUserForm); // Automatically gets data from the form
+        //If you are not getting the user_id from the form, you can append it like this:
+        const userId = document.getElementById('editUserModal').dataset.userid;
+        formData.append('user_id', userId);
+
+        fetch('update_user_info.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert('Failed to update user info: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while updating user info.');
+        });
     });
-    </script>
+}
+
+    async function handleResetPassword(e) {
+        try {
+            const btn = e.target.closest('.reset-pass-btn');
+            document.getElementById('resetUserEmail').textContent = btn.dataset.email;
+            
+            const modal = new bootstrap.Modal(document.getElementById('resetPasswordModal'));
+            modal.show();
+            
+            // Clear password field when modal is shown
+            document.getElementById('resetPassword').value = '';
+        } catch (error) {
+            console.error('Reset password error:', error);
+            alert('An error occurred while preparing to reset password.');
+        }
+    }
+
+    async function handleBanUnban(e) {
+        try {
+            const btn = e.target.closest('.ban-unban-btn');
+            const userId = btn.dataset.userid;
+            const userName = btn.dataset.name;
+            const currentStatus = btn.dataset.status;
+            const isBanned = currentStatus.toLowerCase() !== 'active';
+            const newStatus = isBanned ? 'Active' : 'Inactive';
+            
+            // Update modal content
+            document.getElementById('banUnbanTitle').textContent = isBanned ? 'Unban User' : 'Ban User';
+            document.getElementById('banUnbanMessage').textContent = `Are you sure you want to ${isBanned ? 'unban' : 'ban'} ${userName}?`;
+            document.getElementById('banUnbanActionBtn').textContent = isBanned ? 'Unban' : 'Ban';
+            
+            const modal = new bootstrap.Modal(document.getElementById('banUnbanModal'));
+            modal.show();
+            
+            // Set up action button
+            document.getElementById('banUnbanActionBtn').onclick = async function() {
+                try {
+                    // Optimistic UI update
+                    btn.dataset.status = newStatus;
+                    const badge = btn.closest('tr').querySelector('.badge');
+                    badge.textContent = newStatus;
+                    badge.className = `badge bg-${newStatus === 'Active' ? 'success' : 'danger'}`;
+                    
+                    const response = await fetch('update_user_status.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: `user_id=${userId}&status=${newStatus}`
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (!data.success) {
+                        throw new Error(data.message || 'Failed to update status');
+                    }
+                } catch (error) {
+                    console.error('Ban/Unban error:', error);
+                    // Revert UI on failure
+                    btn.dataset.status = currentStatus;
+                    const badge = btn.closest('tr').querySelector('.badge');
+                    badge.textContent = currentStatus;
+                    badge.className = `badge bg-${currentStatus.toLowerCase() === 'active' ? 'success' : 'danger'}`;
+                    alert(error.message);
+                } finally {
+                    modal.hide();
+                }
+            };
+        } catch (error) {
+            console.error('Ban/Unban setup error:', error);
+            alert('An error occurred while preparing ban/unban action.');
+        }
+    }
+    
+async function handleDeleteUser(e) {
+    try {
+        const btn = e.target.closest('.delete-user-btn');
+        const userId = btn.dataset.userid;
+        const userName = btn.dataset.name;
+
+        // Set user name in modal
+        document.getElementById('deleteUserName').textContent = userName;
+
+        // Store user ID in modal for later use
+        document.getElementById('deleteAccountModal').dataset.userid = userId;
+
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('deleteAccountModal'));
+        modal.show();
+    } catch (error) {
+        console.error('Delete user setup error:', error);
+        alert('An error occurred while preparing to delete user.');
+    }
+}
+
+// Handle delete account form submission
+const deleteAccountForm = document.getElementById('deleteAccountForm');
+if (deleteAccountForm) {
+    deleteAccountForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const userId = document.getElementById('deleteAccountModal').dataset.userid;
+        const formData = new FormData();
+        formData.append('user_id', userId);
+
+        fetch('delete_user.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert('Failed to delete user: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while deleting user.');
+        });
+    });
+}
+  });
+</script>
 </body>
 </html>

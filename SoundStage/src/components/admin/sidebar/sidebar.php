@@ -1,4 +1,3 @@
-<!-- filepath: c:\xampp\htdocs\E-Commerce\src\components\sidebar\sidebar.php -->
 <aside class="sidebar bg-primary text-white p-3 d-flex flex-column align-items-stretch" style="min-height:100vh;position:fixed;left:0;top:0;width:250px;z-index:100;">
     <div class="mb-3 text-center">
         <h5>Admin</h5>
@@ -12,7 +11,7 @@
         <a class="nav-link text-white<?= basename($_SERVER['PHP_SELF'])=='users.php'?' active':'' ?>" href="users.php"><i class="bi bi-people"></i> User</a>
     </nav>
     <div class="mt-auto text-start w-100 px-3">
-        <a href="/AudioHub/src/components/admin/logout/logout.php" class="btn btn-outline-light logout-btn mt-3">
+        <a href="/System/SoundStage/src/pages/auth/sign-in.php" class="btn btn-outline-light logout-btn mt-3">
             <i class="bi bi-box-arrow-right"></i> Logout
         </a>
     </div>

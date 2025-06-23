@@ -13,31 +13,33 @@ $brands = [];
 foreach ($accessories as $acc) {
     $brands[$acc['Brand']][] = $acc;
 }
+
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Accessories | HzOne</title>
+    <title>Accessories | SoundStage</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="/AudioHub/src/assets/icons/website-icon.png" type="image/x-icon">
+    <link rel="icon" href="/System/SoundStage/src/assets/icons/website-icon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #181c24 0%, #2a3a4f 100%);
-            color: #eaf6ff;
+            background: #ffffff;
+            color: #003366;
             font-family: 'Segoe UI', sans-serif;
         }
         .accessories-title {
             font-size: 2.5rem;
             font-weight: bold;
-            color: #7ecbff;
+            color: #003366;
             letter-spacing: 1px;
         }
         .accessories-desc-main {
-            color: #b3c7e6;
+            color: #000000;
             font-size: 1.1rem;
             margin-bottom: 1.5rem;
             text-align: center;
@@ -51,19 +53,19 @@ foreach ($accessories as $acc) {
             box-shadow: 0 4px 24px 0 rgba(126,203,255,0.12);
         }
         .accessories-section-title {
-            color: #7ecbff;
+            color: #003366;
             font-size: 1.6rem;
             font-weight: 600;
             margin-top: 2.5rem;
             margin-bottom: 1.2rem;
             letter-spacing: 0.5px;
-            border-left: 5px solid #7ecbff;
+            border-left: 5px solid #003366;
             padding-left: 0.7rem;
         }
         .iem-card {
-            background: linear-gradient(135deg, #232b3e 60%, #1a2233 100%);
+            background: #003366;
             border-radius: 1.3rem;
-            border: 1px solid #2e3a4d;
+            border: 1px solid #ffffff;
             overflow: hidden;
             transition: transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.18s;
             box-shadow: 0 4px 24px 0 rgba(126,203,255,0.08);
@@ -77,7 +79,7 @@ foreach ($accessories as $acc) {
         .iem-card:hover {
             transform: translateY(-3px) scale(1);
             box-shadow: 0 8px 40px 0 rgba(126,203,255,0.18);
-            border-color: #7ecbff;
+            border-color: #003366;
         }
         .iem-img {
             width: 100%;
@@ -135,7 +137,7 @@ foreach ($accessories as $acc) {
             <div class="accessories-desc-main mb-4">
                 Complete your audio setup with our selection of high-quality accessories.
             </div>
-            <img src="/AudioHub/src/assets/accessories/accessories-banner.webp" alt="Accessories Banner" class="accessories-main-img mb-5">
+            <img src="/System/SoundStage/src/assets/accessories/accessories-banner.png" alt="Accessories Banner" class="accessories-main-img mb-5">
 
             <?php foreach ($brands as $brand => $products): ?>
                 <div class="accessories-section-title"><?= htmlspecialchars($brand) ?></div>
@@ -147,7 +149,7 @@ foreach ($accessories as $acc) {
                                      data-id="<?= $acc['Product_ID'] ?>"
                                      data-name="<?= htmlspecialchars($acc['ProductName']) ?>"
                                      data-price="<?= $acc['Price'] ?>"
-                                     data-image="/AudioHub/src/assets/accessories/<?= htmlspecialchars($acc['Image_URL']) ?>">
+                                     data-image="/System/SoundStage/src/assets/accessories/<?= htmlspecialchars($acc['Image_URL']) ?>">
                                     <span class="iem-brand badge bg-primary position-absolute top-0 start-0 m-2"><?= htmlspecialchars($acc['Brand']) ?></span>
                                     <img src="<?= htmlspecialchars($acc['Image_URL']) ?>" alt="<?= htmlspecialchars($acc['ProductName']) ?>" class="iem-img card-img-top">
                                     <div class="iem-card-body p-3">
@@ -157,7 +159,7 @@ foreach ($accessories as $acc) {
                                             data-id="<?= $acc['Product_ID'] ?>"
                                             data-name="<?= htmlspecialchars($acc['ProductName']) ?>"
                                             data-price="<?= $acc['Price'] ?>"
-                                            data-image="/AudioHub/src/assets/accessories/<?= htmlspecialchars($acc['Image_URL']) ?>">
+                                            data-image="/System/SoundStage/src/assets/accessories/<?= htmlspecialchars($acc['Image_URL']) ?>">
                                             <i class="bi bi-cart-plus"></i> Add to Cart
                                         </a>
                                     </div>

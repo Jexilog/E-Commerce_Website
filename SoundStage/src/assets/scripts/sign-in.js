@@ -1,6 +1,7 @@
 // Demo accounts (replace with your backend logic)
 const accounts = [
     { email: "carlos@gmail.com", password: "123" },
+    { email: "justinejeckhoavio@gmail.com", password: "123" }
 ];
 
 // Toggle password visibility
@@ -35,7 +36,7 @@ document.getElementById('signinForm').addEventListener('submit', function(e) {
         // Simulate session (for demo)
         localStorage.setItem('user', JSON.stringify(found));
         // Redirect to dashboard
-        window.location.href = "/AudioHub/src/components/admin/dashboard.php";
+        window.location.href = "/System/SoundStage/src/components/admin/dashboard.php";
     } else {
         alert("Invalid email or password.");
     }

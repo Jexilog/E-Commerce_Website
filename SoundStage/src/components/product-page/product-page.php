@@ -1,59 +1,147 @@
 <?php
-    // Start session
-    session_start();
-    require_once __DIR__ . '../../../db.php';
+session_start();
+require_once __DIR__ . '../../../db.php'; // Uses PDO
 
-    // Get product ID from URL
-    $id = $_GET['id'] ?? null;
-    if (!$id) {
-        http_response_code(404);
-        echo "<h2 style='color:#ff6b81;text-align:center;margin-top:5rem;'>Product not found.</h2>";
+$categoryMap = [
+    1 => 'In-Ear Monitor',
+    2 => 'Accessories',
+    3 => 'Headphones',
+    4 => 'True-Wireless Stereo',
+    5 => 'Digital Audio Player',
+    6 => 'Speaker'
+];
+
+// --- PRODUCT FETCH ---
+$id = $_GET['id'] ?? null;
+if (!$id) {
+    http_response_code(404);
+    echo "<h2 style='color:#ff6b81;text-align:center;margin-top:5rem;'>Product not found.</h2>";
+    exit;
+}
+
+$stmt = $pdo->prepare("SELECT * FROM product_tbl WHERE Product_ID = ?");
+$stmt->execute([$id]);
+$product = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$product) {
+    http_response_code(404);
+    echo "<h2 style='color:#ff6b81;text-align:center;margin-top:5rem;'>Product not found.</h2>";
+    exit;
+}
+
+$imageFolder = match((int)$product['Category_ID']) {
+    1 => 'iems', 2 => 'accessories', 3 => 'headphones',
+    4 => 'earbuds', 5 => 'dap', 6 => 'speaker',
+    default => 'iems',
+};
+$imageFullPath = "/System/SoundStage/src/assets/{$imageFolder}/" . ltrim($product['Image_URL'], '/');
+
+// --- RECOMMENDATION ---
+$alsoLikeStmt = $pdo->prepare("SELECT * FROM product_tbl WHERE Category_ID = ? AND Product_ID != ? LIMIT 4");
+$alsoLikeStmt->execute([$product['Category_ID'], $id]);
+$alsoLike = $alsoLikeStmt->fetchAll(PDO::FETCH_ASSOC);
+
+// --- HELPER: Update total ---
+function updateCartTotal($pdo, $cartId) {
+    $stmt = $pdo->prepare("SELECT SUM(Qty * Unit_price) AS total FROM cart_items_tbl WHERE Cart_ID = ?");
+    $stmt->execute([$cartId]);
+    $total = $stmt->fetchColumn();
+    
+    $stmt = $pdo->prepare("UPDATE cart_tbl SET Total_price = ? WHERE Cart_ID = ?");
+    $stmt->execute([$total, $cartId]);
+}
+
+// --- ADD OR UPDATE CART FUNCTION ---
+function addOrUpdateCart($pdo, $userId, $productId, $quantity, $price) {
+    // Find existing cart
+    $stmt = $pdo->prepare("SELECT Cart_ID FROM cart_tbl WHERE User_ID = ? ORDER BY Cart_ID DESC LIMIT 1");
+    $stmt->execute([$userId]);
+    $cartId = $stmt->fetchColumn();
+
+    // If no cart, create one
+    if (!$cartId) {
+        $stmt = $pdo->prepare("INSERT INTO cart_tbl (User_ID, Total_price, Added_At) VALUES (?, 0, NOW())");
+        $stmt->execute([$userId]);
+        $cartId = $pdo->lastInsertId();
+    }
+
+    // Check if item already exists
+    $stmt = $pdo->prepare("SELECT Qty FROM cart_items_tbl WHERE Cart_ID = ? AND Product_ID = ?");
+    $stmt->execute([$cartId, $productId]);
+    $existing = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($existing) {
+        // Update quantity
+        $newQty = $existing['Qty'] + $quantity;
+        $stmt = $pdo->prepare("UPDATE cart_items_tbl SET Qty = ? WHERE Cart_ID = ? AND Product_ID = ?");
+        $stmt->execute([$newQty, $cartId, $productId]);
+    } else {
+        // Insert new item
+        $stmt = $pdo->prepare("INSERT INTO cart_items_tbl (Cart_ID, Product_ID, Qty, Unit_price) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$cartId, $productId, $quantity, $price]);
+    }
+
+    // Update cart total
+    updateCartTotal($pdo, $cartId);
+    return true;
+}
+
+// --- HANDLE POST SUBMISSION ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $quantity = isset($_POST['quantity']) && is_numeric($_POST['quantity']) ? max(1, (int)$_POST['quantity']) : 1;
+
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: /System/SoundStage/src/pages/auth/login.php");
         exit;
     }
 
-    // Fetch product from DB
-    $stmt = $pdo->prepare("SELECT * FROM product_tbl WHERE Product_ID = ?");
-    $stmt->execute([$id]);
-    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+    $userId = $_SESSION['user_id'];
+    $productId = $product['Product_ID'];
+    $price = $product['Price'];
 
-    if (!$product) {
-        http_response_code(404);
-        echo "<h2 style='color:#ff6b81;text-align:center;margin-top:5rem;'>Product not found.</h2>";
-        exit;
+    if (isset($_POST['add'])) {
+        if (addOrUpdateCart($pdo, $userId, $productId, $quantity, $price)) {
+            echo "<script>alert('Item has been added to your cart!')</script>";
+            header("Location: product-page.php?id=$productId&success=1");
+            exit;
+        } else {
+            echo "<div class='alert alert-danger'>Failed to add to cart.</div>";
+        }
     }
 
-    // Determine image folder based on category
-    $imageFolder = '';
-    switch ($product['Category_ID']) {
-        case 1: $imageFolder = 'iems'; break;
-        case 2: $imageFolder = 'accessories'; break;
-        // dagdagan pa kung may iba kang category
-        default: $imageFolder = 'iems'; // fallback
+    if (isset($_POST['buy_now'])) {
+        if (addOrUpdateCart($pdo, $userId, $productId, $quantity, $price)) {
+            header("Location: /System/SoundStage/src/pages/cart/checkout.php");
+            exit;
+        } else {
+            echo "<div class='alert alert-danger'>Failed to process order.</div>";
+        }
     }
-    $imageFullPath = "/AudioHub/src/assets/{$imageFolder}/" . ltrim($product['Image_URL'], '/');
 
-    // Fetch "You May Also Like" products (same category, exclude self, limit 4)
-    $alsoLikeStmt = $pdo->prepare("SELECT * FROM product_tbl WHERE Category_ID = ? AND Product_ID != ? LIMIT 4");
-    $alsoLikeStmt->execute([$product['Category_ID'], $id]);
-    $alsoLike = $alsoLikeStmt->fetchAll(PDO::FETCH_ASSOC);
+    if (isset($_POST['wishlist'])) {
+        echo "<div class='alert alert-info'>Feature coming soon.</div>";
+    }
+}
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title><?= htmlspecialchars($product['ProductName']) ?> | HzOne</title>
+    <title><?= htmlspecialchars($product['ProductName']) ?> | SoundStage</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="/AudioHub/src/assets/icons/website-icon.png" type="image/x-icon">
+    <link rel="icon" href="System/SoundStage/src/assets/icons/website-icon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #181c24 0%, #2a3a4f 100%);
-            color: #eaf6ff;
+            background: #ffffff;
+            color: #000000;
             font-family: 'Segoe UI', sans-serif;
         }
         .product-hero {
-            background: linear-gradient(120deg, #7ecbff 0%, #181c24 100%);
+            background: #003366;
             border-radius: 2rem;
             box-shadow: 0 8px 40px 0 rgba(126,203,255,0.18);
             padding: 2.5rem 2rem 2rem 2rem;
@@ -113,13 +201,13 @@
             color: #181c24;
         }
         .section-title {
-            color: #7ecbff;
+            color: #003366;
             font-size: 1.5rem;
             font-weight: 600;
             margin-top: 2.5rem;
             margin-bottom: 1.2rem;
             letter-spacing: 0.5px;
-            border-left: 5px solid #7ecbff;
+            border-left: 5px solid #003366;
             padding-left: 0.7rem;
         }
         .review-card {
@@ -138,7 +226,7 @@
             color: #ffdf6b;
         }
         .also-like-card {
-            background: linear-gradient(135deg, #232b3e 60%, #1a2233 100%);
+            background: #003366;
             border-radius: 1.3rem;
             border: 1px solid #2e3a4d;
             overflow: hidden;
@@ -191,82 +279,93 @@
     <?php include '../header/header.php'; ?>
 
     <div class="container">
-        <div class="product-hero">
-            <img src="<?= htmlspecialchars($product['Image_URL']) ?>" alt="<?= htmlspecialchars($product['ProductName']) ?>" class="product-img">
-            <div class="product-info">
-                <div class="product-brand"><?= htmlspecialchars($product['Brand']) ?></div>
-                <div class="product-title"><?= htmlspecialchars($product['ProductName']) ?></div>
-                <div class="product-price">₱<?= number_format($product['Price'], 2) ?></div>
-                <!-- Stock badge -->
-                <div class="mb-2">
-                    <span class="badge bg-success" style="font-size:1rem;">In Stock</span>
+    <div class="product-hero">
+        <img src="<?= htmlspecialchars($imageFullPath) ?>" alt="<?= htmlspecialchars($product['ProductName']) ?>" class="product-img">
+        <div class="product-info">
+            <div class="product-brand"><?= htmlspecialchars($product['Brand']) ?></div>
+            <div class="product-title"><?= htmlspecialchars($product['ProductName']) ?></div>
+            <div class="product-price">₱<?= number_format($product['Price'], 2) ?></div>
+            
+            <!-- Stock badge -->
+            <div class="mb-2">
+                <span class="badge bg-success" style="font-size:1rem;">In Stock</span>
+            </div>
+
+            <!-- Quantity selector and Add to Cart -->
+            <form method="POST" id="addToCartForm" class="d-flex align-items-center mb-3" style="gap:1rem;">
+                <input type="hidden" name="product_id" value="<?= htmlspecialchars($product['Product_ID']) ?>">
+                <label for="quantity" class="form-label mb-0" style="color:#eaf6ff;">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" class="form-control" style="width:80px;">
+                <button type="submit" class="add-cart-btn" name="add">
+                    <i class="bi bi-cart-plus"></i> Add to Cart
+                </button>
+            </form>
+
+
+            <!-- Buy Now and Wishlist -->
+            <div class="d-flex align-items-center mb-3" style="gap:1rem;">
+                <a href="/System/SoundStage/src/pages/checkout.php?buy_now_id=<?= urlencode($product['Product_ID']) ?>" class="btn btn-warning" style="font-weight:600;">
+                    <i class="bi bi-bag-check"></i> Buy Now
+                </a>
+                <button type="button" class="btn btn-outline-danger wishlist-btn" title="Add to Wishlist" style="font-weight:600;" data-product="<?= htmlspecialchars($id) ?>">
+                    <i class="bi bi-heart"></i>
+                </button>
+            </div>
+
+            <!-- Share Buttons -->
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <span style="color:#eaf6ff;">Share:</span>
+                <a href="#" class="text-primary"><i class="bi bi-facebook"></i></a>
+                <a href="#" class="text-info"><i class="bi bi-twitter"></i></a>
+                <a href="#" class="text-danger"><i class="bi bi-instagram"></i></a>
+                <a href="#" class="text-light"><i class="bi bi-link-45deg"></i></a>
+            </div>
+
+            <div class="product-desc"><?= htmlspecialchars($product['Description']) ?></div>
+        </div>
+    </div>
+
+    <!-- Description Section -->
+    <div class="section-title text-center" style="border:none;color:#003366;"><i class="bi bi-info-circle"></i> Product Description</div>
+    <div class="row mb-4">
+        <div class="col-lg-10 mx-auto">
+            <p class="lead text-center" style="color:#000000;">
+                <?= htmlspecialchars($product['Description']) ?>
+            </p>
+        </div>
+    </div>
+
+    <!-- Product Info Section -->
+    <div class="section-title text-center" style="border:none;color:#003366;"><i class="bi bi-list-ul"></i> Product Information</div>
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm border-0" style="background:#003366;">
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0" style="color:#eaf6ff;">
+                        <li><strong>Brand:</strong> <?= htmlspecialchars($product['Brand']) ?></li>
+                        <li><strong>Price:</strong> ₱<?= number_format($product['Price'], 2) ?></li>
+                        <li><strong>Stock:</strong> <?= htmlspecialchars($product['Stock_QTY']) ?></li>
+                    </ul>
                 </div>
-                <!-- Quantity selector and Add to Cart -->
-                <form class="d-flex align-items-center mb-3" style="gap:1rem;">
-                    <label for="quantity" class="form-label mb-0" style="color:#eaf6ff;">Quantity:</label>
-                    <input type="number" id="quantity" name="quantity" value="1" min="1" class="form-control" style="width:80px;">
-                    <button type="submit" class="add-cart-btn"><i class="bi bi-cart-plus"></i> Add to Cart</button>
-                </form>
-                <!-- Checkout and Wishlist buttons -->
-                <div class="d-flex align-items-center mb-3" style="gap:1rem;">
-                    <a href="/AudioHub/src/pages/checkout.php?buy_now_id=<?= urlencode($product['Product_ID']) ?>" class="btn btn-warning" style="font-weight:600;">
-                        <i class="bi bi-bag-check"></i> Buy Now
-                    </a>
-                    <button type="button" class="btn btn-outline-danger wishlist-btn" title="Add to Wishlist" style="font-weight:600;" data-product="<?= htmlspecialchars($id) ?>">
-                        <i class="bi bi-heart"></i>
-                    </button>
-                </div>
-                <!-- Share buttons -->
-                <div class="d-flex align-items-center gap-2 mb-3">
-                    <span style="color:#eaf6ff;">Share:</span>
-                    <a href="#" class="text-primary"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="text-info"><i class="bi bi-twitter"></i></a>
-                    <a href="#" class="text-danger"><i class="bi bi-instagram"></i></a>
-                    <a href="#" class="text-light"><i class="bi bi-link-45deg"></i></a>
-                </div>
-                <div class="product-desc"><?= htmlspecialchars($product['Description']) ?></div>
             </div>
         </div>
+    </div>
 
-        <!-- Product Description -->
-        <div class="section-title text-center" style="border:none;color:#7ecbff;"><i class="bi bi-info-circle"></i> Product Description</div>
-        <div class="row mb-4">
-            <div class="col-lg-10 mx-auto">
-                <p class="lead text-center" style="color:#ffffff;">
-                    <?= htmlspecialchars($product['Description']) ?>
-                </p>
-            </div>
-        </div>
-
-        <!-- Product Information / Specs -->
-        <div class="section-title text-center" style="border:none;color:#7ecbff;"><i class="bi bi-list-ul"></i> Product Information</div>
-        <div class="row mb-5">
-            <div class="col-lg-8 mx-auto">
-                <div class="card shadow-sm border-0" style="background:#232b3e;">
-                    <div class="card-body">
-                        <ul class="list-unstyled mb-0" style="color:#eaf6ff;">
-                            <li><strong>Brand:</strong> <?= htmlspecialchars($product['Brand']) ?></li>
-                            <li><strong>Price:</strong> ₱<?= number_format($product['Price'], 2) ?></li>
-                            <li><strong>Stock:</strong> <?= htmlspecialchars($product['Stock_QTY']) ?></li>
-                            <!-- Add more fields as needed -->
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- You May Also Like Section -->
-        <div class="section-title"><i class="bi bi-heart-fill"></i> You May Also Like</div>
-        <div class="row g-4 mb-5">
-            <?php if ($alsoLike): ?>
-                <?php foreach ($alsoLike as $like): ?>
+    <!-- You May Also Like -->
+    <div class="section-title"><i class="bi bi-heart-fill"></i> You May Also Like</div>
+    <div class="row g-4 mb-5">
+        <?php if ($alsoLike): ?>
+            <?php foreach ($alsoLike as $like): ?>
+                <?php
+                $altImagePath = "/System/SoundStage/src/assets/{$categoryMap[$like['Category_ID']]}/" . ltrim($like['Image_URL'], '/');
+                ?>
                 <div class="col-12 col-sm-6 col-md-3 col-lg-3">
-                    <a href="product-page.php?id=<?= urlencode($like['Product_ID']) ?>" class="iem-card-link" style="text-decoration:none; color:inherit;">
+                    <a href="/System/SoundStage/src/components/product-page.php?id=<?= urlencode($like['Product_ID']) ?>" class="iem-card-link" style="text-decoration:none; color:inherit;">
                         <div class="also-like-card shadow-sm position-relative">
                             <?php if (!empty($like['Brand'])): ?>
                                 <span class="iem-brand badge bg-primary position-absolute top-0 start-0 m-2"><?= htmlspecialchars($like['Brand']) ?></span>
                             <?php endif; ?>
-                            <img src="<?= htmlspecialchars($like['Image_URL']) ?>" alt="<?= htmlspecialchars($like['ProductName']) ?>" class="iem-img card-img-top">
+                            <img src="<?= $altImagePath ?>" alt="<?= htmlspecialchars($like['ProductName']) ?>" class="iem-img card-img-top">
                             <div class="iem-card-body p-3">
                                 <h5 class="iem-name mb-1 text-light"><?= htmlspecialchars($like['ProductName']) ?></h5>
                                 <div class="iem-price mb-2 text-light">₱<?= number_format($like['Price'], 2) ?></div>
@@ -275,20 +374,22 @@
                         </div>
                     </a>
                 </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <div class="text-muted">No similar products to recommend.</div>
-            <?php endif; ?>
-        </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="text-muted">No similar products to recommend.</div>
+        <?php endif; ?>
     </div>
-
-    <?php include '../header/footer.php'; ?>
+</div>
+    
+    <?php 
+    include '../nav-links/review-section.php';
+    include '../header/footer.php'; ?>
 
     <script>
         document.querySelectorAll('.wishlist-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const productId = this.getAttribute('data-product');
-                fetch('/AudioHub/src/components/wishlist-toggle.php', {
+                fetch('/System/SoundStage/src/components/wishlist-toggle.php', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                     body: 'product_id=' + productId
@@ -305,6 +406,26 @@
                 });
             });
         });
+        function addToCart(event) {
+                event.preventDefault();
+                const form = event.target;
+                const formData = new FormData(form);
+
+                fetch('', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Something went wrong.");
+                });
+            }
+
+
     </script>
 </body>
 </html>

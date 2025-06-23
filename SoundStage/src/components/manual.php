@@ -7,24 +7,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manual & Guide | HzOne</title>
+    <title>Manual & Guide | SoundStage</title>
     <link rel="icon" href="../assets/icons/website-icon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #181c24 0%, #2a3a4f 100%);
+            background: #ffffff;
             font-family: 'Segoe UI', sans-serif;
         }
         .manual-searchbar {
-            background: linear-gradient(120deg, #232b3e 60%, #1a2233 100%);
+            background: #003366;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(25, 118, 210, 0.06);
-            padding: 1.5rem 2rem 1rem 2rem;
+            padding: 1rem 2rem 1rem 2rem;
             margin-bottom: 1.5rem;
         }
         .manual-section-card {
-            background: linear-gradient(120deg, #232b3e 60%, #1a2233 100%);
+            background: #003366;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(25, 118, 210, 0.06);
             padding: 1.5rem;
@@ -66,7 +66,7 @@
             margin-right: 0.5rem;
         }
         .manual-sidebar {
-            background: linear-gradient(120deg, #232b3e 60%, #1a2233 100%);
+            background: #003366;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(25, 118, 210, 0.06);
             padding: 1.5rem;
@@ -107,7 +107,7 @@
             margin-bottom: 0.5rem;
         }
         .kb-desc {
-            color: #666;
+            color: #ffffff;
             font-size: 1.05rem;
             margin-bottom: 1.2rem;
         }
@@ -152,7 +152,7 @@
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link text-primary" id="manual-tab" data-bs-toggle="tab" data-bs-target="#manual" type="button" role="tab" aria-controls="manual" aria-selected="false">
-                            AudioHub Manual
+                            SoundStage Manual
                         </button>
                     </li>
                 </ul>
@@ -162,7 +162,7 @@
                         <div class="manual-section-card mb-4">
                             <div class="kb-header">Knowledge Base</div>
                             <div class="kb-desc">
-                                Explore our comprehensive Knowledge Base for AudioHub. Find answers, best practices, and tips to maximize your experience.
+                                Explore our comprehensive Knowledge Base for SoundStage. Find answers, best practices, and tips to maximize your experience.
                             </div>
                             <div class="manual-folder mb-3">
                                 <div>
@@ -172,7 +172,7 @@
                                 <span class="manual-folder-meta">8 Articles &nbsp;•&nbsp; 2 Sections</span>
                             </div>
                             <ul class="manual-article-list">
-                                <li><i class="bi bi-file-earmark-text"></i>Introduction to AudioHub</li>
+                                <li><i class="bi bi-file-earmark-text"></i>Introduction to SoundStage</li>
                                 <li><i class="bi bi-file-earmark-text"></i>System Requirements</li>
                                 <li><i class="bi bi-file-earmark-text"></i>Creating Your First Project</li>
                                 <li><i class="bi bi-file-earmark-text"></i>Basic Navigation</li>
@@ -195,9 +195,9 @@
                     <!-- AudioHub Manual Content -->
                     <div class="tab-pane fade" id="manual" role="tabpanel" aria-labelledby="manual-tab">
                         <div class="manual-section-card mb-4">
-                            <div class="kb-header">AudioHub Manual</div>
+                            <div class="kb-header">SoundStage Manual</div>
                             <div class="kb-desc">
-                                Detailed guides and step-by-step instructions for using AudioHub features.
+                                Detailed guides and step-by-step instructions for using SoundStage features.
                             </div>
                             <div class="manual-folder mb-3">
                                 <div>
@@ -252,14 +252,14 @@
                     <div class="d-flex align-items-center mb-2">
                         <img src="../assets/icons/website-icon.png" alt="AudioHub" style="width:32px;height:32px;margin-right:0.7rem;">
                         <div>
-                            <div style="font-weight:700; color:#1976d2;">AudioHub</div>
+                            <div style="font-weight:700; color:#1976d2;">SoundStage</div>
                             <div style="font-size:0.98rem;color:#888;">Manual & Support</div>
                         </div>
                     </div>
                     <button class="btn btn-outline-primary btn-sm mb-3">Follow</button>
                     <h6>Popular Articles</h6>
                     <ul>
-                        <li><i class="bi bi-file-earmark-text"></i>Getting Started with AudioHub</li>
+                        <li><i class="bi bi-file-earmark-text"></i>Getting Started with SoundStage</li>
                         <li><i class="bi bi-file-earmark-text"></i>Uploading Your First Track</li>
                         <li><i class="bi bi-file-earmark-text"></i>Account Settings Overview</li>
                         <li><i class="bi bi-file-earmark-text"></i>Audio Formats Supported</li>

@@ -6,9 +6,9 @@ $checkoutId = isset($_GET['checkout_id']) ? intval($_GET['checkout_id']) : null;
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Order Success | HzOne</title>
+    <title>Order Success | SoundStage</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" href="/AudioHub/src/assets/icons/website-icon.png" type="image/x-icon">
+    <link rel="icon" href="/System/SoundStage/src/assets/icons/website-icon.png" type="image/x-icon">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
@@ -84,7 +84,7 @@ $checkoutId = isset($_GET['checkout_id']) ? intval($_GET['checkout_id']) : null;
             <?php if ($checkoutId): ?>
                 <div class="order-id">Order Number: <strong>#<?= htmlspecialchars($checkoutId) ?></strong></div>
             <?php endif; ?>
-            We appreciate your trust in HzOne. You will receive a confirmation email soon.
+            We appreciate your trust in SoundStage. You will receive a confirmation email soon.
         </div>
         <a href="/AudioHub/index.php" class="btn btn-home mt-2"><i class="bi bi-house"></i> Back to Home</a>
     </div>

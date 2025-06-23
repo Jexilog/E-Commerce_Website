@@ -6,9 +6,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Join Us | HzOne</title>
+    <title>Join Us | SoundStage</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="/AudioHub/src/assets/icons/website-icon.png" type="image/x-icon">
+    <link rel="icon" href="/System/SoundStage/src/assets/icons/website-icon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -176,16 +176,16 @@
                 <span class="join-hero-highlight">Join</span> Our Team & Community
             </div>
             <div class="join-hero-desc">
-                Be part of HzOne’s mission to bring world-class audio to the Philippines.<br>
+                Be part of SoundStage’s mission to bring world-class audio to the Philippines.<br>
                 Whether you’re a creative, engineer, marketer, or music lover, we want you to help us shape the future of sound.
             </div>
             <a href="#apply" class="btn join-btn shadow text-light">Apply Now</a>
         </div>
 
         <!-- Why Join Us -->
-        <div class="join-section-title text-center"><i class="bi bi-stars"></i> Why Join HzOne?</div>
+        <div class="join-section-title text-center"><i class="bi bi-stars"></i> Why Join SoundStage?</div>
         <div class="join-section-desc text-center mb-4">
-            We’re more than a company—we’re a passionate community. At HzOne, you’ll find a culture of innovation, collaboration, and growth. Here’s what makes us special:
+            We’re more than a company—we’re a passionate community. At SoundStage, you’ll find a culture of innovation, collaboration, and growth. Here’s what makes us special:
         </div>
         <div class="join-benefits">
             <div class="join-benefit-card">
@@ -296,7 +296,7 @@
                     </div>
                     <div class="col-12">
                         <label for="message" class="form-label">Tell us about yourself</label>
-                        <textarea class="form-control" id="message" name="message" rows="4" placeholder="Share your experience, passion, or why you want to join HzOne!"></textarea>
+                        <textarea class="form-control" id="message" name="message" rows="4" placeholder="Share your experience, passion, or why you want to join SoundStage!"></textarea>
                     </div>
                     <div class="col-12 text-center mt-3">
                         <button type="submit" class="btn join-btn px-5">Submit Application</button>
