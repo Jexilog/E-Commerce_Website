@@ -1,6 +1,6 @@
 <?php
 
-$connect = mysqli_connect("localhost", "root", "", "credentials");
+$connect = mysqli_connect("localhost", "root", "", "db_websystem");
 $email = "";
 $stored_otp = "";
 $ip_add = $_SERVER['REMOTE_ADDR'];
@@ -57,7 +57,7 @@ if ($result && $result->num_rows > 0) {
         }
 
         body{
-            background:url('../images/login_wallpaper.png') no-repeat;
+            background:url('../../images/login_wallpaper.png') no-repeat;
             background-size:cover;
             display: flex;
             justify-content: center;
@@ -139,12 +139,12 @@ if ($result && $result->num_rows > 0) {
         <p>Please enter the OTP sent to your email address.</p>
         <form action="" method="post" id="otp-form">
             <div class="input-box">
-                <input type="text" id="otp-input" maxlength = "1" name="otp1" required>
-                <input type="text" id="otp-input" maxlength = "1" name="otp2" required>
-                <input type="text" id="otp-input" maxlength = "1" name="otp3" required>
-                <input type="text" id="otp-input" maxlength = "1" name="otp4" required>
-                <input type="text" id="otp-input" maxlength = "1" name="otp5" required>
-                <input type="text" id="otp-input" maxlength = "1" name="otp6" required>
+                <input type="text" id="otp-input1" class="otp-inputs" maxlength = "1" name="otp1" required>
+                <input type="text" id="otp-input2" class="otp-inputs" maxlength = "1" name="otp2" required>
+                <input type="text" id="otp-input3" class="otp-inputs" maxlength = "1" name="otp3" required>
+                <input type="text" id="otp-input4" class="otp-inputs" maxlength = "1" name="otp4" required>
+                <input type="text" id="otp-input5" class="otp-inputs" maxlength = "1" name="otp5" required>
+                <input type="text" id="otp-input6" class="otp-inputs" maxlength = "1" name="otp6" required>
             </div>
             <br>
             <button type="submit" id="verify-button" name="verify">Verify</button>

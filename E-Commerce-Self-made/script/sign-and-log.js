@@ -15,6 +15,7 @@ const eyeConIcon = document.getElementById("eyeConIcon");
 const openterms = document.getElementById('OpenTerms');
 const modalTerms = document.getElementById('modalTerms');
 const closeterms  = document.getElementById('closeTerms');
+const inputs = document.querySelectorAll(".otp-inputs");
 
 togglePassword.addEventListener('click', function (event){
     const isPassword = password.type === "password";
@@ -149,3 +150,35 @@ form.addEventListener('submit', function (event) {
         alert(errors.join("\n")); // Use alert box for error messages
     }
 });
+
+// //OTP behaviour
+//  inputs.forEach((input, index) => {
+//     input.addEventListener("keydown", (e) => {
+//         if (e.key >= "0" && e.key <= "9") {
+//             input.value = ""; // Clear before typing a new digit
+//         }
+
+//         if (e.key === "Enter") {
+//             e.preventDefault();
+//             if (index < inputs.length - 1) {
+//                 inputs[index + 1].focus();
+//             }
+//         }
+
+//         if (e.key === "Backspace") {
+//             e.preventDefault(); // Prevent default backspace behavior
+//             if (input.value !== "") {
+//                 input.value = ""; // Clear current input
+//             } else if (index > 0) {
+//                 inputs[index - 1].focus();
+//                 inputs[index - 1].value = ""; // Optional: also clear previous input
+//             }
+//         }
+//     });
+
+//     input.addEventListener("input", () => {
+//         if (input.value && index < inputs.length - 1) {
+//             inputs[index + 1].focus();
+//         }
+//     });
+// });

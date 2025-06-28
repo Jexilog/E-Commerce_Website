@@ -4,12 +4,12 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 
-require '../Composer/vendor/phpmailer/phpmailer/src/Exception.php';
-require '../Composer/vendor/phpmailer/phpmailer/src/PHPMailer.php';
-require '../Composer/vendor/phpmailer/phpmailer/src/SMTP.php';
-require '../Composer/vendor/autoload.php';
+require '../../Composer/vendor/phpmailer/phpmailer/src/Exception.php';
+require '../../Composer/vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require '../../Composer/vendor/phpmailer/phpmailer/src/SMTP.php';
+require '../../Composer/vendor/autoload.php';
 
-$connect = mysqli_connect("localhost","root","","credentials");
+$connect = mysqli_connect("localhost","root","","db_websystem");
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
@@ -59,7 +59,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 echo "
                 <script>
                 alert('OTP has been sent to your email address');
-                document.location.href = '../components/otpReset.php';
+                document.location.href = '../auth/otpReset.php';
                 </script>
                 ";
             } catch (Exception $e) {
@@ -82,8 +82,91 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password</title>
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+    color: white;
+}
+
+body {
+    background: url('../../images/login_wallpaper.png') no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.container h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.container p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.container input[type="email"] {
+    width: 100%;
+    height: 50px;
+    border: 2px solid #fff;
+    border-radius: 7px;
+    padding: 0 15px;
+    outline: none;
+    color: #fff;
+    background: transparent;
+    font-size: 16px;
+    margin-bottom: 20px;
+    transition: border-color 0.3s;
+}
+
+.container input[type="email"]:focus {
+    border-color: #9b59b6;
+}
+
+.container button {
+    width: 100%;
+    height: 45px;
+    background: #9b59b6;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.container button:hover {
+    background: #8e44ad;
+    transform: translateY(-2px);
+}
+
+    </style>
 </head>
 <body>
+    <div class="container">
     <form method="POST">
         <h2>Forgot Password</h2>
         <p> Enter your email address connected to your account
@@ -92,5 +175,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         <input type="email" name="email" placeholder="Enter your email" required>
         <button type="submit" name="send">Send OTP</button>
     </form> 
+    </div>
 </body>
 </html>

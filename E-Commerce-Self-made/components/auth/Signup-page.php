@@ -4,13 +4,13 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
 
-require '../Composer/vendor/phpmailer/phpmailer/src/Exception.php';
-require '../Composer/vendor/phpmailer/phpmailer/src/PHPMailer.php';
-require '../Composer/vendor/phpmailer/phpmailer/src/SMTP.php';
-require '../Composer/vendor/autoload.php';
+require '../../Composer/vendor/phpmailer/phpmailer/src/Exception.php';
+require '../../Composer/vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require '../../Composer/vendor/phpmailer/phpmailer/src/SMTP.php';
+require '../../Composer/vendor/autoload.php';
 
 
-$connect = mysqli_connect("localhost","root","","credentials");
+$connect = mysqli_connect("localhost","root","","db_websystem");
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
@@ -76,14 +76,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 echo "
                 <script>
                 alert('OTP has been sent to your email address');
-                document.location.href = '../components/otpverify.php';
+                document.location.href = '../../components/auth/otpverify.php';
                 </script>
                 ";
             } catch (Exception $e) {
                 echo "
                 <script>
                 alert('Message could not be sent. Mailer Error: {$mail->ErrorInfo}');
-                document.location.href = '';
+                document.location.href = 'index.php';
                 </script>
                 ";
             }
@@ -116,7 +116,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             align-items: center;
             height: 120vh;
             padding: 10px;
-            background: url('../images/login_wallpaper.png') no-repeat;
+            background: url('../../images/login_wallpaper.png') no-repeat;
             background-size: cover;
             /* background:linear-gradient(135deg, #71b7e6, #9b59b6); */
         }
@@ -619,6 +619,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             </div>
         </form>
     </div>
-    <script src="../script/sign-and-log.js"></script>
+    <script src="../../script/sign-and-log.js"></script>
 </body>
 </html>

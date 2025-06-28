@@ -1,6 +1,6 @@
 <?php
 session_start();
-$connect = mysqli_connect("localhost", "root", "", "credentials");
+$connect = mysqli_connect("localhost", "root", "", "db_websystem");
 
 $error = "";
 
@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background:url('../images/login_wallpaper.png') no-repeat;
+            background:url('../../images/login_wallpaper.png') no-repeat;
             background-size: cover;
             background-position: center;
         }
@@ -176,14 +176,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label>
                     <input type="checkbox" name="remember"> Remember me
                 </label>
-                <a href="../components/Forgotpass-page.php">Forgot Password?</a>
+                <a href="../auth/Forgotpass-page.php">Forgot Password?</a>
             </div>
             <button type="submit" class="btn">Login</button>
             <div class="register-link">
-                <p>Don't have an account? <a href="../components/Signup-page.php">Register</a></p>
+                <p>Don't have an account? <a href="../auth/Signup-page.php">Register</a></p>
             </div>
         </form>
     </div>
-    <script src="../script/sign-and-log.js"></script>
+    <script src="../../script/sign-and-log.js"></script>
 </body>
 </html>

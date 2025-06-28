@@ -1,6 +1,6 @@
 <?php
 
-$connect = mysqli_connect("localhost", "root", "", "credentials");
+$connect = mysqli_connect("localhost", "root", "", "db_websystem");
 $email = "";
 $stored_otp = "";
 $ip_add = $_SERVER['REMOTE_ADDR'];
@@ -20,7 +20,7 @@ if (mysqli_num_rows($result) > 0) {
 
             echo "<script>
             alert('OTP verified successfully! You can now log in.');
-            document.location.href = '../components/Login-page.php';
+            document.location.href = '../../components/auth/Login-page.php';
             </script>";
         } else {
             echo "<script>
@@ -40,6 +40,7 @@ if (mysqli_num_rows($result) > 0) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Verification</title>
     <style>
         *{
@@ -50,7 +51,7 @@ if (mysqli_num_rows($result) > 0) {
         }
 
         body{
-            background:url('../images/login_wallpaper.png') no-repeat;
+            background:url('../../images/login_wallpaper.png') no-repeat;
             background-size:cover;
             display: flex;
             justify-content: center;
@@ -124,24 +125,26 @@ if (mysqli_num_rows($result) > 0) {
             cursor: pointer;
             font-weight: 600;
         }
+
     </style>
 </head>
 <body>
     <div class="container">
     <h1>OTP Verification</h1>
     <p>Please enter the OTP sent to your email address.</p>
-        <form action="" method="post" id="otp-form">
+        <form action="" method="post" id="otp-form" autocomplete="off">
             <div class="input-box">
-                <input type="text" id="otp-input" maxlength = "1" name="otp1" required>
-                <input type="text" id="otp-input" maxlength = "1" name="otp2" required>
-                <input type="text" id="otp-input" maxlength = "1" name="otp3" required>
-                <input type="text" id="otp-input" maxlength = "1" name="otp4" required>
-                <input type="text" id="otp-input" maxlength = "1" name="otp5" required>
-                <input type="text" id="otp-input" maxlength = "1" name="otp6" required>
+                <input type="text" id="otp-input1" class="otp-inputs" maxlength = "1" name="otp1" required>
+                <input type="text" id="otp-input2" class="otp-inputs" maxlength = "1" name="otp2" required>
+                <input type="text" id="otp-input3" class="otp-inputs" maxlength = "1" name="otp3" required>
+                <input type="text" id="otp-input4" class="otp-inputs" maxlength = "1" name="otp4" required>
+                <input type="text" id="otp-input5" class="otp-inputs" maxlength = "1" name="otp5" required>
+                <input type="text" id="otp-input6" class="otp-inputs" maxlength = "1" name="otp6" required>
             </div>
             <br>
             <button type="submit" id="verify-button" name="verify">Verify</button>
         </form>
     </div>
+    <!-- <script src="../../script/sign-and-log.js"></script> -->
 </body>
 </html>
