@@ -13,6 +13,21 @@
     padding-right: 0 !important;
 }
 
+.alert{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.alert i.bi-x {
+    cursor: pointer;
+    color: #dc3545;
+    font-size: 1.6rem;
+    font-weight: 1000;
+    transition: color 0.3s ease;
+    margin-left:500px;
+}
+
 /* Sidebar CSS */
 .sidebar {
     min-height: 100vh;

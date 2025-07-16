@@ -98,8 +98,8 @@
                     <form class="d-flex gap-2" id="product-filter-form">
                         <select class="form-select form-select-sm" id="categoryFilter">
                             <option value="all">All Categories</option>
-                            <option value="In-Ear Monitor">IEM's</option>
-                            <option value="Headphones">Headphone</option>
+                            <option value="In-Ear Monitor">Personal Computers</option>
+                            <option value="Headphones">Laptops</option>
                             <option value="Earbuds (TWS)">Earbuds (TWS)</option>
                             <option value="Audio Accessories">Audio Accessories</option>
                             <option value="Digital Audio Player">Digital Audio Player</option>

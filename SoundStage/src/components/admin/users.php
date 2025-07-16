@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
       $verification_code = bin2hex(random_bytes(16));
   }
 
-  $conn = new mysqli("localhost", "root", "", "testing");
+  $conn = new mysqli("localhost", "root", "", "db_system");
   if ($conn->connect_error) {
       die("Connection failed: " . $conn->connect_error);
   }
@@ -141,6 +141,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
                     <option value="50" <?= $maxRows == 50 ? 'selected' : '' ?>>50</option>
                 </select>
             </form>
+            <button class="btn btn-danger btn-sm mb-2" id="deleteSelectedUsersBtn"><i class="bi bi-trash"></i> Delete Selected</button>
+
             <!-- Add User Message -->
             <?php if (!empty($addUserMessage)): ?>
                 <div class="alert alert-info"><?= $addUserMessage ?></div>
@@ -439,249 +441,361 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // DOM Elements
-    const userSearchInput = document.getElementById('userSearchInput');
-    const userTableBody = document.getElementById('userTableBody');
-    const editUserForm = document.getElementById('editUserForm');
-    const editUserModal = document.getElementById('editUserModal');
-    const avatarInput = document.getElementById('userAvatar');
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+             document.addEventListener("DOMContentLoaded", function (){
+            const userSearchInput = document.getElementById('userSearchInput');
+            const userTableBody = document.getElementById('userTableBody');
+            const editUserForm = document.getElementById('editUserForm');
+            const editUserModal = document.getElementById('editUserModal');
+            const avatarInput = document.getElementById('userAvatar');
 
-    // Search functionality
-    if (userSearchInput) {
-        userSearchInput.addEventListener('input', debounce(function() {
-            const filter = this.value.toLowerCase().trim();
-            const rows = document.querySelectorAll('#userTableBody tr');
-            
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(filter) ? '' : 'none';
+            if(userSearchInput){
+                userSearchInput.addEventListener('input',debounce(searchUsers, 300));
+            }
+
+            if (userTableBody) {
+                userTableBody.addEventListener('click', function(e) {
+                    // Edit User
+                    if (e.target.closest('.edit-user-btn')) {
+                        handleEditUser(e);
+                    }
+                    // Reset Password
+                    else if (e.target.closest('.reset-pass-btn')) {
+                        handleResetPassword(e);
+                    }
+                    // Ban/Unban User
+                    else if (e.target.closest('.ban-unban-btn')) {
+                        handleBanUnban(e);
+                    }
+                    // Delete User
+                    else if (e.target.closest('.delete-user-btn')) {
+                        handleDeleteUser(e);
+                    }
+                });
+            }
+
+            const selectAllCheckbox = document.getElementById('selectAllUsers');
+
+            if (selectAllCheckbox && userTableBody) {
+                // When "Select All" is toggled
+                selectAllCheckbox.addEventListener('change', function () {
+                    const userCheckboxes = userTableBody.querySelectorAll('.user-checkbox');
+                    userCheckboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+                });
+
+                // When any individual checkbox is toggled
+                userTableBody.addEventListener('change', function (e) {
+                    if (e.target.classList.contains('user-checkbox')) {
+                        const userCheckboxes = userTableBody.querySelectorAll('.user-checkbox');
+                        const allChecked = Array.from(userCheckboxes).every(cb => cb.checked);
+                        selectAllCheckbox.checked = allChecked;
+                    }
+                });
+            }
+
+             if (editUserForm) {
+                editUserForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    submitEditUserForm();
+                });
+            }
+
+             if (avatarInput) {
+                avatarInput.addEventListener('change', function(e) {
+                    const [file] = this.files;
+                    if (file && file.type.startsWith('image/')) {
+                        document.getElementById('avatarPreview').src = URL.createObjectURL(file);
+                    }
+                });
+            }
+
+            const deleteSelectedBtn = document.getElementById('deleteSelectedUsersBtn');
+                if (deleteSelectedBtn && userTableBody) {
+                    deleteSelectedBtn.addEventListener('click', async function () {
+                        // Get all checked user checkboxes
+                        const checked = userTableBody.querySelectorAll('.user-checkbox:checked');
+                        if (checked.length === 0) {
+                            alert('Please select at least one user to delete.');
+                            return;
+                        }
+
+                        if (!confirm(`Are you sure you want to delete ${checked.length} selected user(s)? This action cannot be undone.`)) {
+                            return;
+                        }
+
+                        // Collect user IDs
+                        const userIds = Array.from(checked).map(cb => cb.value);
+
+                        // Send AJAX request
+                        $.ajax({
+                            url: 'api/delete_multiple_users.php',
+                            type: 'POST',
+                            data: { 'user_ids': userIds },
+                            success: function(data) {
+                                if (data.success) {
+                                    window.location.reload();
+                                } else {
+                                    alert('Failed to delete users: ' + (data.message || 'Unknown error'));
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error:', error);
+                                alert('An error occurred while deleting users.');
+                            }
+                        });
+                    });
+                }
+
+             function debounce(func, wait) {
+                let timeout;
+                return function() {
+                    const context = this, args = arguments;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(context, args), wait);
+                };
+            }
+
+            function searchUsers() {
+                const searchTerm = userSearchInput.value.toLowerCase();
+                const rows = userTableBody.querySelectorAll('tr');
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            }
+
+            async function handleEditUser(e) {
+                try {
+                    e.preventDefault();
+                    const btn = e.target.closest('.edit-user-btn');
+                    
+                    // Populate modal fields
+                    document.getElementById('editFirstName').value = btn.dataset.fname;
+                    document.getElementById('editLastName').value = btn.dataset.lname;
+                    document.getElementById('editEmail').value = btn.dataset.email;
+                    document.getElementById('editStatus').value = btn.dataset.status;
+                    
+                    // Store user ID
+                    editUserModal.dataset.userid = btn.dataset.userid;
+                    
+                    // Show modal
+                    const modal = new bootstrap.Modal(editUserModal);
+                    modal.show();
+                } catch (error) {
+                    console.error('Edit user error:', error);
+                    alert('An error occurred while preparing to edit user.');
+                }
+            }
+            async function submitEditUserForm() {
+
+                $.ajax({
+                    dataType:'json',
+                    type:'POST',
+                    url:'api/update_user_info.php',
+                    data: { user_id: editUserModal.dataset.userid,
+                        first_name: $('#editFirstName').val(),
+                        last_name: $('#editLastName').val(),
+                        email: $('#editEmail').val(),
+                        status: $('#editStatus').val(),
+                    },
+                    success:function(data) {
+                        if (data.success) {
+                            alert('User updated successfully.');
+                            bootstrap.Modal.getInstance(editUserModal).hide();
+                            location.reload(); // Reload to see changes
+                        } else {
+                            alert('Error updating user: ' + data.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                            console.error('AJAX error:', error);
+                            alert('An error occurred while updating user.');
+                        }
+                });
+            }
+
+           let currentResetUserID = null;
+            async function handleResetPassword(e) {
+                try {
+                    const btn = e.target.closest('.reset-pass-btn');
+                    currentResetUserID = btn.dataset.userid; // Store email for reset
+                    const email = btn.dataset.email;
+
+                     // Clear password field when modal is shown
+                    document.getElementById('resetUserEmail').textContent = btn.dataset.email;
+                    document.getElementById('resetPassword').value = '';
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('resetPasswordModal'));
+                    modal.show();
+                    
+                   
+                } catch (error) {
+                    console.error('Reset password error:', error);
+                    alert('An error occurred while preparing to reset password.');
+                }
+            }
+
+            document.getElementById('submitResetPassword').addEventListener('click', async () => {
+            const newPassword = document.getElementById('resetPassword').value.trim();
+
+            if (newPassword.length < 8) {
+                alert('Password must be at least 8 characters.');
+                return;
+            }
+
+            $.ajax({
+                    type: 'POST',
+                    url: 'functions/reset_password.php',
+                    data: {
+                        user_id: currentResetUserID,
+                        new_password: newPassword
+                    },
+                    success: function(data) {
+                        if (data.success) {
+                            alert('Password reset successfully.');
+                            bootstrap.Modal.getInstance(document.getElementById('resetPasswordModal')).hide();
+                        } else {
+                            alert('Failed to reset password: ' + data.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX error:', error);
+                        alert('An error occurred while resetting the password.');
+                    }
+                });
             });
-        }, 300));
-    }
 
-    // Event delegation for user actions
-    if (userTableBody) {
-        userTableBody.addEventListener('click', function(e) {
-            // Edit User
-            if (e.target.closest('.edit-user-btn')) {
-                handleEditUser(e);
-            }
-            // Reset Password
-            else if (e.target.closest('.reset-pass-btn')) {
-                handleResetPassword(e);
-            }
-            // Ban/Unban User
-            else if (e.target.closest('.ban-unban-btn')) {
-                handleBanUnban(e);
-            }
-            // Delete User
-            else if (e.target.closest('.delete-user-btn')) {
-                handleDeleteUser(e);
-            }
-        });
-    }
 
-    // Form submission for editing user
-    if (editUserForm) {
-        editUserForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            submitEditUserForm();
-        });
-    }
-
-    // Avatar preview
-    if (avatarInput) {
-        avatarInput.addEventListener('change', function(e) {
-            const [file] = this.files;
-            if (file && file.type.startsWith('image/')) {
-                document.getElementById('avatarPreview').src = URL.createObjectURL(file);
-            }
-        });
-    }
-
-    // Helper functions
-    function debounce(func, wait) {
-        let timeout;
-        return function() {
-            const context = this, args = arguments;
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(context, args), wait);
-        };
-    }
-
-    async function handleEditUser(e) {
-        try {
-            e.preventDefault();
-            const btn = e.target.closest('.edit-user-btn');
-            
-            // Populate modal fields
-            document.getElementById('editFirstName').value = btn.dataset.fname;
-            document.getElementById('editLastName').value = btn.dataset.lname;
-            document.getElementById('editEmail').value = btn.dataset.email;
-            document.getElementById('editStatus').value = btn.dataset.status;
-            
-            // Store user ID
-            editUserModal.dataset.userid = btn.dataset.userid;
-            
-            // Show modal
-            const modal = new bootstrap.Modal(editUserModal);
-            modal.show();
-        } catch (error) {
-            console.error('Edit user error:', error);
-            alert('An error occurred while preparing to edit user.');
-        }
-    }
-
-    async function submitEditUserForm() {
-        const editUserForm = document.getElementById('editUserForm');
-        editUserForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(editUserForm); // Automatically gets data from the form
-        //If you are not getting the user_id from the form, you can append it like this:
-        const userId = document.getElementById('editUserModal').dataset.userid;
-        formData.append('user_id', userId);
-
-        fetch('update_user_info.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.reload();
-            } else {
-                alert('Failed to update user info: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while updating user info.');
-        });
-    });
-}
-
-    async function handleResetPassword(e) {
-        try {
-            const btn = e.target.closest('.reset-pass-btn');
-            document.getElementById('resetUserEmail').textContent = btn.dataset.email;
-            
-            const modal = new bootstrap.Modal(document.getElementById('resetPasswordModal'));
-            modal.show();
-            
-            // Clear password field when modal is shown
-            document.getElementById('resetPassword').value = '';
-        } catch (error) {
-            console.error('Reset password error:', error);
-            alert('An error occurred while preparing to reset password.');
-        }
-    }
-
-    async function handleBanUnban(e) {
+       function handleBanUnban(e) {
         try {
             const btn = e.target.closest('.ban-unban-btn');
             const userId = btn.dataset.userid;
             const userName = btn.dataset.name;
             const currentStatus = btn.dataset.status;
             const isBanned = currentStatus.toLowerCase() !== 'active';
-            const newStatus = isBanned ? 'Active' : 'Inactive';
-            
+            const newStatus = isBanned ? 'Active' : 'Banned';
+
             // Update modal content
             document.getElementById('banUnbanTitle').textContent = isBanned ? 'Unban User' : 'Ban User';
             document.getElementById('banUnbanMessage').textContent = `Are you sure you want to ${isBanned ? 'unban' : 'ban'} ${userName}?`;
-            document.getElementById('banUnbanActionBtn').textContent = isBanned ? 'Unban' : 'Ban';
-            
-            const modal = new bootstrap.Modal(document.getElementById('banUnbanModal'));
+            const actionBtn = document.getElementById('banUnbanActionBtn');
+            actionBtn.textContent = isBanned ? 'Unban' : 'Ban';
+
+            const modalEl = document.getElementById('banUnbanModal');
+            const modal = new bootstrap.Modal(modalEl);
             modal.show();
-            
+
             // Set up action button
-            document.getElementById('banUnbanActionBtn').onclick = async function() {
-                try {
-                    // Optimistic UI update
-                    btn.dataset.status = newStatus;
-                    const badge = btn.closest('tr').querySelector('.badge');
-                    badge.textContent = newStatus;
-                    badge.className = `badge bg-${newStatus === 'Active' ? 'success' : 'danger'}`;
-                    
-                    const response = await fetch('update_user_status.php', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: `user_id=${userId}&status=${newStatus}`
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (!data.success) {
-                        throw new Error(data.message || 'Failed to update status');
+            actionBtn.onclick = function () {
+                // Optimistic UI update
+                btn.dataset.status = newStatus;
+
+                const badge = btn.closest('tr').querySelector('.badge');
+                badge.textContent = newStatus;
+                badge.className = `badge bg-${newStatus === 'Active' ? 'success' : 'danger'}`;
+
+                btn.textContent = newStatus === 'Active' ? 'Ban' : 'Unban';
+                btn.classList.toggle('text-success', newStatus !== 'Active');
+                btn.classList.toggle('text-danger', newStatus === 'Active');
+                btn.classList.add('fw-bold');
+
+                // AJAX call using jQuery
+                $.ajax({
+                    url: 'api/update_user_status.php',
+                    method: 'POST',
+                    data: {
+                        user_id: userId,
+                        status: newStatus
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (!data.success) {
+                            throw new Error(data.message || 'Failed to update status');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX error:', error);
+
+                        // Revert UI on failure
+                        btn.dataset.status = currentStatus;
+
+                        const badge = btn.closest('tr').querySelector('.badge');
+                        badge.textContent = currentStatus;
+                        badge.className = `badge bg-${currentStatus.toLowerCase() === 'active' ? 'success' : 'danger'}`;
+
+                        btn.textContent = currentStatus === 'Active' ? 'Ban' : 'Unban';
+                        btn.classList.toggle('text-success', currentStatus !== 'Active');
+                        btn.classList.toggle('text-danger', currentStatus === 'Active');
+
+                        alert('Failed to update user status.');
+                    },
+                    complete: function () {
+                        modal.hide();
                     }
-                } catch (error) {
-                    console.error('Ban/Unban error:', error);
-                    // Revert UI on failure
-                    btn.dataset.status = currentStatus;
-                    const badge = btn.closest('tr').querySelector('.badge');
-                    badge.textContent = currentStatus;
-                    badge.className = `badge bg-${currentStatus.toLowerCase() === 'active' ? 'success' : 'danger'}`;
-                    alert(error.message);
-                } finally {
-                    modal.hide();
-                }
+                });
             };
         } catch (error) {
             console.error('Ban/Unban setup error:', error);
             alert('An error occurred while preparing ban/unban action.');
         }
     }
+
+
     
-async function handleDeleteUser(e) {
-    try {
-        const btn = e.target.closest('.delete-user-btn');
-        const userId = btn.dataset.userid;
-        const userName = btn.dataset.name;
 
-        // Set user name in modal
-        document.getElementById('deleteUserName').textContent = userName;
 
-        // Store user ID in modal for later use
-        document.getElementById('deleteAccountModal').dataset.userid = userId;
+    // Function to handle delete button click
+   
+       async function handleDeleteUser(e) {
+        try {
+            const btn = e.target.closest('.delete-user-btn');
+            const userId = btn.dataset.userid;
+            const userName = btn.dataset.name;
 
-        // Show modal
-        const modal = new bootstrap.Modal(document.getElementById('deleteAccountModal'));
-        modal.show();
-    } catch (error) {
-        console.error('Delete user setup error:', error);
-        alert('An error occurred while preparing to delete user.');
+            // Set user name in modal
+            document.getElementById('deleteUserName').textContent = userName;
+
+            // Store user ID in modal for later use
+            const modalEl = document.getElementById('deleteAccountModal');
+            modalEl.dataset.userid = userId;
+
+            // Show modal
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        } catch (error) {
+            console.error('Delete user setup error:', error);
+            alert('An error occurred while preparing to delete user.');
+        }
+
+       const deleteAccountForm = document.getElementById('deleteAccountForm');
+        if (deleteAccountForm) {
+            deleteAccountForm.onsubmit = function (e) {
+                e.preventDefault();
+                const userId = document.getElementById('deleteAccountModal').dataset.userid;
+                const formData = new FormData();
+                formData.append('user_id', userId);
+
+                fetch('api/delete_user.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        alert('Failed to delete user: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting user.');
+                });
+            };
+        }
     }
-}
-
-// Handle delete account form submission
-const deleteAccountForm = document.getElementById('deleteAccountForm');
-if (deleteAccountForm) {
-    deleteAccountForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const userId = document.getElementById('deleteAccountModal').dataset.userid;
-        const formData = new FormData();
-        formData.append('user_id', userId);
-
-        fetch('delete_user.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.reload();
-            } else {
-                alert('Failed to delete user: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while deleting user.');
-        });
-    });
-}
-  });
+});        
 </script>
 </body>
 </html>

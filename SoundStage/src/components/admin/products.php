@@ -530,7 +530,7 @@ $result = $conn->query($sql);
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
                     const productId = this.dataset.id;
-                    fetch('get_product.php?id=' + productId)
+                    fetch('api/get_product.php?id=' + productId)
                         .then(res => res.json())
                         .then(data => {
                             populateEditModal(data);
@@ -566,7 +566,7 @@ $result = $conn->query($sql);
             document.getElementById('editProductForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const formData = new FormData(this);
-                fetch('update_product.php', {
+                fetch('api/update_product.php', {
                     method: 'POST',
                     body: formData
                 })
@@ -593,7 +593,7 @@ $result = $conn->query($sql);
 
              document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
                 if (productIdToDelete) {
-                    fetch('delete_product.php', {
+                    fetch('api/delete_product.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
@@ -652,7 +652,7 @@ $result = $conn->query($sql);
             document.getElementById('bulkDeleteBtn').addEventListener('click', function() {
                 const selected = Array.from(document.querySelectorAll('.row-checkbox:checked')).map(cb => cb.value);
                 if(selected.length && confirm('Delete selected products?')) {
-                    fetch('delete_product.php', {
+                    fetch('api/delete_product.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
@@ -706,7 +706,7 @@ $result = $conn->query($sql);
                 const sort = sortFilter.value;
                 const search = searchInput.value;
 
-                fetch('handler.php', {
+                fetch('api/handler.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams({
